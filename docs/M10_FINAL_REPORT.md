@@ -69,15 +69,21 @@ not a production-tail estimate.
 
 | Scope for all 162 repricings | Median ms | Empirical p99 ms | Repricings/s at median |
 |---|---:|---:|---:|
-| Raw ONNX price + centered-bump Delta | 0.164 | 0.170 | 987,053 |
-| Guardrails + 67 Monte Carlo fallbacks | 15.216 | 15.382 | 10,647 |
-| Matched-tolerance all Monte Carlo | 31.557 | 32.897 | 5,134 |
+| Raw ONNX price + centered-bump Delta | 0.087 | 0.104 | 1,865,199 |
+| Guardrails + 67 Monte Carlo fallbacks | 9.508 | 9.944 | 17,039 |
+| Matched-tolerance all Monte Carlo | 23.471 | 24.287 | 6,902 |
 
-The exact rejected subset alone measured 13.364 ms median, identifying fallback work and per-call
+The exact rejected subset alone measured 9.572 ms median, identifying fallback work and per-call
 thread creation as the dominant routed cost; raw ONNX inference is about 1% of end-to-end routed
-time. The guarded route measured **2.07x** faster than all Monte Carlo at the stated matched-error
+time. The guarded route measured **2.47x** faster than all Monte Carlo at the stated matched-error
 rule. This result is specific to this portfolio, path grid, guard policy, and machine—not a
 universal speedup or low-latency claim.
+
+These tracked timings come from a controlled clean-system rerun using the unchanged frozen command.
+Two immediately subsequent complete invocations produced guarded medians of 9.586 and 9.574 ms,
+matched-Monte-Carlo medians of 23.438 and 23.724 ms, and speedups of 2.445x and 2.478x. Accuracy,
+routing counts, selected path count, and all result checksums were identical across the runs; only
+the first clean rerun is stored as the versioned timing artifact.
 
 Historical M5 engine evidence remains unchanged: on the same machine, the arithmetic control-
 variate workload sustained 15.676 million raw path evolutions/s at 10 threads (5.72x its scalar

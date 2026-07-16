@@ -161,5 +161,5 @@ Use these measured bullets with the experiment scope intact:
   from 8.68 to 1.74 and Delta RMSE from 0.121 to 0.0495 versus polynomial ridge.
 - Embedded float64 ONNX Runtime inference in C++ with domain, finite-output, price-bound, sampled
   monotonicity checks, and reasoned Monte Carlo fallback; repriced 18 synthetic contracts across
-  9 shocks in 15.2 ms median versus 31.6 ms for all Monte Carlo at the documented matched-error
+  9 shocks in 9.51 ms median versus 23.47 ms for all Monte Carlo at the documented matched-error
   rule (58.6% neural acceptance, Apple M4).

@@ -9,8 +9,8 @@ against analytical references, and uses a guarded neural surrogate for eligible 
 The neural model is an accelerator: invalid, unsafe, or out-of-domain results fall back to Monte
 Carlo.
 
-> Status: M0–M10 are complete. The final 162-repricing synthetic portfolio measured 15.2 ms median
-> for guarded ONNX plus fallback versus 31.6 ms for all Monte Carlo at the documented matched-error
+> Status: M0–M10 are complete. The final 162-repricing synthetic portfolio measured 9.51 ms median
+> for guarded ONNX plus fallback versus 23.47 ms for all Monte Carlo at the documented matched-error
 > rule on Apple M4. Neural acceptance was 58.6%; every rejection used the trusted engine. See the
 > [final report](docs/M10_FINAL_REPORT.md) for scope, p99, error, setup, and limitations.
 
@@ -21,7 +21,7 @@ Carlo.
 | C++ Monte Carlo | Arithmetic control variate: 15.676M raw paths/s at 10 threads, 5.72x scalar latency; [M5 protocol](docs/M5_PERFORMANCE.md) |
 | Neural model | 840 accepted train points; held-out p99 normalized error 1.7388 and Delta RMSE 0.0495 versus ridge 8.6795/0.1209; [M8 report](docs/M8_NEURAL_MODEL.md) |
 | ONNX deployment | Float64 dynamic batch; C++ price/Delta parity, reasoned guardrails and fallback; [M9 report](docs/M9_ONNX_DEPLOYMENT.md) |
-| Portfolio routing | 18 contracts × 9 shocks; guarded median/p99 15.216/15.382 ms, 2.07x matched-MC median speedup; [M10 report](docs/M10_FINAL_REPORT.md) |
+| Portfolio routing | 18 contracts × 9 shocks; guarded median/p99 9.508/9.944 ms, 2.47x matched-MC median speedup; [M10 report](docs/M10_FINAL_REPORT.md) |
 
 Normalized price error uses a fixed one-currency-unit floor. These are machine/workload-specific
 measurements, not production latency, universal speedup, formal no-arbitrage, or OOD guarantees.

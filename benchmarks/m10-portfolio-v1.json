@@ -115,36 +115,36 @@
     "raw_neural_price_delta_batch": {
       "warmups": 20,
       "repetitions": 100,
-      "median_milliseconds": 0.16412499999999999,
-      "empirical_p99_milliseconds": 0.16968425000000023,
-      "repricings_per_second_at_median": 987052.55140898714,
+      "median_milliseconds": 0.086854000000000001,
+      "empirical_p99_milliseconds": 0.103728,
+      "repricings_per_second_at_median": 1865199.0697031801,
       "result_checksum": 291035.86974626721
     },
     "guarded_route_including_checks_and_fallback": {
       "warmups": 2,
       "repetitions": 7,
-      "median_milliseconds": 15.215958000000001,
-      "empirical_p99_milliseconds": 15.38168804,
-      "repricings_per_second_at_median": 10646.717084786906,
+      "median_milliseconds": 9.5077079999999992,
+      "empirical_p99_milliseconds": 9.9439660799999992,
+      "repricings_per_second_at_median": 17038.806829153778,
       "result_checksum": 21690.238639970321
     },
     "trusted_fallback_subset_only": {
       "warmups": 2,
       "repetitions": 7,
-      "median_milliseconds": 13.363625000000001,
-      "empirical_p99_milliseconds": 13.43216698,
-      "repricings_per_second_at_median": 5013.6097054504298,
+      "median_milliseconds": 9.5719159999999999,
+      "empirical_p99_milliseconds": 10.977398559999999,
+      "repricings_per_second_at_median": 6999.6435405408911,
       "result_checksum": 10284.281097426367
     },
     "matched_tolerance_all_monte_carlo": {
       "warmups": 2,
       "repetitions": 7,
-      "median_milliseconds": 31.557416,
-      "empirical_p99_milliseconds": 32.897445519999998,
-      "repricings_per_second_at_median": 5133.5001573005848,
+      "median_milliseconds": 23.470707999999998,
+      "empirical_p99_milliseconds": 24.2868545,
+      "repricings_per_second_at_median": 6902.2204187449315,
       "result_checksum": 21471.453826910179
     },
-    "guarded_neural_speedup_vs_matched_monte_carlo": 2.0739683955489361
+    "guarded_neural_speedup_vs_matched_monte_carlo": 2.4685978997251494
   },
   "full_routed_style_type_slices": [
     {"id": "European_call", "metrics": {
