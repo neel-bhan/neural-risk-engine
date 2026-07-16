@@ -72,6 +72,8 @@ nre::PricingRequest request_for(Workload workload, std::size_t paths, std::size_
           },
       .backend = nre::PricingBackend::monte_carlo,
       .estimator = nre::PricingEstimator::plain,
+      .monte_carlo_config = {},
+      .control_variate_config = {},
   };
   const nre::MonteCarloConfig config{
       .seed = kMasterSeed, .path_count = paths, .thread_count = threads};

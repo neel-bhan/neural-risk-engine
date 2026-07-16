@@ -303,6 +303,8 @@ void add_flag(std::vector<std::string>& flags, std::string flag) {
       .market = point.market,
       .backend = PricingBackend::monte_carlo,
       .estimator = estimator,
+      .monte_carlo_config = {},
+      .control_variate_config = {},
   };
   if (estimator == PricingEstimator::plain) {
     request.monte_carlo_config = MonteCarloConfig{

@@ -114,6 +114,7 @@ void test_partitioning_reproducibility_and_metadata() {
       .backend = nre::PricingBackend::monte_carlo,
       .estimator = nre::PricingEstimator::plain,
       .monte_carlo_config = config,
+      .control_variate_config = {},
   };
   const auto unified = nre::price(request);
   expect(unified.metadata.requested_threads == 3U, "router propagates requested threads");
@@ -175,6 +176,7 @@ void test_threaded_estimator_agreement() {
       .market = market,
       .backend = nre::PricingBackend::monte_carlo,
       .estimator = nre::PricingEstimator::geometric_control_variate,
+      .monte_carlo_config = {},
       .control_variate_config = control,
   };
   const auto unified_control = nre::price(control_request);
