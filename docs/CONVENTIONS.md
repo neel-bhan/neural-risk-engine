@@ -66,9 +66,14 @@ All analytical formulas, simulations, datasets, and tests must use this same mon
 
 ## Random sampling
 
-- The initial scalar reference will use a documented standard-library generator and normal
-  transform for portability and reproducibility within a fixed toolchain.
+- The scalar reference uses `std::mt19937_64` with a 64-bit seed. It converts the top 53 output
+  bits explicitly to an open-interval uniform and applies the Box-Muller transform, caching the
+  paired draw. This avoids the implementation-defined sequence of `std::normal_distribution`.
+- The engine output and draw order are stable by construction. Last-place differences in `log`,
+  `sqrt`, `sin`, and `cos` may still occur across math-library implementations, so reproducibility
+  claims apply to a fixed toolchain and platform.
 - Correctness tests use fixed seeds and statistical tolerances.
+- In M2, one effective path means one independently generated discounted payoff sample.
 - Performance results must state whether a “path” means one payoff sample or an antithetic pair.
 - Antithetic and control-variate comparisons must reuse the same draws.
 - Threaded runs derive non-overlapping deterministic streams from a master seed; the precise stream

@@ -21,7 +21,7 @@ formula using the exact monitoring schedule in `docs/CONVENTIONS.md`.
 **Exit gate:** tests cover published/high-precision fixtures, call-put parity, sensible boundaries,
 and finite-difference Delta. Edge-case behavior is documented.
 
-## M2 — Correct scalar Monte Carlo
+## M2 — Correct scalar Monte Carlo (complete)
 
 **Learn:** exact GBM time steps, pseudo-random sampling, online mean/variance, standard error, and
 confidence intervals.
