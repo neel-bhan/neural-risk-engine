@@ -1,9 +1,8 @@
 # M7 work queue — Simple surrogate baseline
 
-M6 is complete: C++ generation produces versioned price/Delta labels, point-level splits, quality
-flags, deterministic manifests, and byte-identical small-run reproduction. The implementation
-commit field in `docs/M6_DATASET_GENERATION.md` and M6 configs remains `PENDING` for finalization by
-the committing agent.
+M6 is complete at implementation commit `e5e5db07574e69b06f745d41ebea29a2f592f4fc`:
+C++ generation produces versioned price/Delta labels, point-level splits, quality flags,
+deterministic manifests, and byte-identical small-run reproduction.
 
 ## Task 1 — Freeze the M7 environment and loader
 

@@ -84,8 +84,7 @@ evaluation than for bulk training if cost requires it, and record both.
 configuration; analytical subsets pass cross-checks.
 
 The schema, deterministic generator, quality policy, small-run measurements, and regeneration
-evidence are in [`M6_DATASET_GENERATION.md`](M6_DATASET_GENERATION.md). The source commit field is
-left `PENDING` until the implementation commit exists.
+evidence are in [`M6_DATASET_GENERATION.md`](M6_DATASET_GENERATION.md).
 
 ## M7 — Simple surrogate baseline
 

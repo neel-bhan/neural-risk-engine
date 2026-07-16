@@ -4,7 +4,7 @@ This report records the small M6 evidence run. It establishes deterministic gene
 integrity, provenance, and label-quality behavior; it is not a claim about the eventual training
 dataset size or surrogate accuracy.
 
-Source implementation commit: `PENDING`.
+Source implementation commit: `e5e5db07574e69b06f745d41ebea29a2f592f4fc`.
 
 ## Declared design
 
@@ -50,7 +50,7 @@ make dataset-reproduce
 ```
 
 Measured on 2026-07-16 with Apple Clang 17.0.0 on an Apple M4 arm64 MacBook Air (10 reported
-hardware threads). The source field remains `PENDING` until the implementation commit exists.
+hardware threads).
 
 ## Measured small-run results
 
