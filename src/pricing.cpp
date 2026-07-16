@@ -46,13 +46,13 @@ PricingEstimate stochastic_delta_estimate(const MonteCarloResult& result) {
 }
 
 PricingMetadata monte_carlo_metadata(const MonteCarloResult& result) {
-  return {
-      .effective_paths = result.effective_paths,
-      .raw_paths = result.raw_paths,
-      .seed = result.seed,
-      .requested_threads = result.requested_threads,
-      .active_threads = result.active_threads,
-  };
+  PricingMetadata metadata{};
+  metadata.effective_paths = result.effective_paths;
+  metadata.raw_paths = result.raw_paths;
+  metadata.seed = result.seed;
+  metadata.requested_threads = result.requested_threads;
+  metadata.active_threads = result.active_threads;
+  return metadata;
 }
 
 UnifiedPricingResult unified_monte_carlo_result(const MonteCarloResult& result,
