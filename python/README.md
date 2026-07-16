@@ -1,14 +1,14 @@
 # Python workspace
 
-Dataset generation remains in the dependency-free trusted C++ engine. M7 adds a strict loader and
-a deterministic polynomial-ridge baseline using only pinned NumPy 2.3.5. PyTorch and ONNX remain
-out of scope until M8 and M9.
+Dataset generation remains in the dependency-free trusted C++ engine. M7 provides the strict
+loader and deterministic polynomial-ridge baseline. M8 layers pinned PyTorch 2.13.0 onto the same
+environment for the scalar-price neural ablations. ONNX remains out of scope until M9.
 
 Create the ignored environment and run the tests:
 
 ```bash
 python3 -m venv .venv
-.venv/bin/python -m pip install -r python/requirements-m7.txt
+.venv/bin/python -m pip install -r python/requirements-m8.txt
 make python-test
 ```
 
@@ -39,3 +39,21 @@ Its Delta is explicitly not a derivative of its price output.
 The small JSON model artifact is `models/m7/polynomial-ridge-v1.json`. Generated labels and
 reproduction copies remain ignored. The comparison-ready machine-readable result is
 `benchmarks/m7-polynomial-ridge-v1.json`.
+
+## Neural protocol
+
+The frozen experiment is `python/config/m8-neural-v1.json`. Run both fair ablations, reproduce
+their exact selected tensor state, and perform the sealed held-out comparison with:
+
+```bash
+make neural-train
+make neural-reproduce
+make neural-evaluate
+```
+
+The MLP has one `price/strike` output. Delta is `d(strike * output)/d(spot)` from PyTorch autograd,
+including the log-moneyness preprocessing chain. Price-only and derivative-supervised models use
+the same four capacity/weight-decay candidates and validation-only selection. State dictionaries
+and export-ready JSON metadata live under `models/m8/`; machine-readable evidence is
+`benchmarks/m8-neural-v1.json`. The training device is deterministic float64 CPU; Apple MPS was not
+used or tested.

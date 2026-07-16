@@ -1,44 +1,80 @@
-# M8 work queue — Derivative-supervised PyTorch model
+# M9 work queue — ONNX C++ acceleration with guarded fallback
 
-M7 is complete with a strict versioned-data loader, training-only preprocessing, deterministic
-polynomial-ridge artifact, separately fitted Delta baseline, and held-out/slice/timing evidence.
+M8 is complete with pinned deterministic PyTorch training, one scalar price output, autograd spot
+Delta, fair price-only/derivative-supervised ablations, exact checkpoint reproduction, and frozen
+held-out/slice/timing evidence. M9 deploys the selected derivative-supervised state without changing
+the trusted Monte Carlo backend.
 
-## Task 1 — Freeze the neural experiment
+## Task 1 — Freeze export and runtime contracts
 
-- Add a minimal pinned PyTorch environment compatible with the existing Python version and Apple
-  Silicon; retain the M7 baseline commands and artifact unchanged.
-- Reuse the M7 validated loader, exact dataset checksums, split policy, price floor, slice
-  definitions, and final comparison protocol.
-- Predeclare model capacity candidates, seeds, optimizer, training budget, early-stopping rule,
-  price/Delta loss scaling, and validation selection metric before inspecting neural test results.
+- Pin compatible ONNX, ONNX Runtime Python, and C++ runtime versions; document supported platforms
+  and preserve the dependency-free C++ reference build when neural support is disabled.
+- Define a versioned batched tensor contract from raw domain inputs through the exact M8 feature
+  order, means/scales, `price/strike` output, and physical-price rescaling. Do not copy constants
+  independently from the M8 metadata.
+- Export only the frozen derivative-supervised checkpoint. Record source model/state/config/data
+  checksums, opset, exporter/runtime versions, tensor names, dtypes, and dynamic batch axes.
+- Choose and document a derivative-consistent deployment Delta policy. If C++ uses centered spot
+  bumps of the same scalar ONNX price because ONNX Runtime does not provide autograd, use a
+  predeclared scale-aware bump and validate it against M8 PyTorch autograd; never add a learned
+  Delta head.
 
-## Task 2 — Implement derivative-consistent models
+## Task 2 — Prove Python/export parity
 
-- Build an MLP with one scalar price output and obtain Delta by automatic differentiation with
-  respect to unscaled spot, accounting explicitly for preprocessing and price normalization.
-- Train a price-only ablation and a derivative-supervised model using the same accepted training
-  parameter points. Validation alone selects capacity/checkpoint and the test split remains sealed.
-- Add deterministic tests for gradient units, batching, loss scaling, seed control, checkpoint round
-  trips, preprocessing reuse, and finite outputs.
+- Add deterministic tests comparing reloaded PyTorch and ONNX outputs over training-domain points,
+  boundary points, all style/type combinations, and multiple batch sizes.
+- Compare deployed Delta policy against PyTorch autograd with explicit absolute/relative tolerances,
+  including near-zero and high/low spot cases.
+- Reject metadata/checksum/schema/feature-order mismatches and non-finite exporter outputs.
+- Store a compact machine-readable parity report; do not tune export tolerances on the final test
+  split.
 
-## Task 3 — Evaluate once and compare fairly
+## Task 3 — Add an optional C++ ONNX backend
 
-- Evaluate the frozen price-only and derivative-supervised checkpoints once on the same M7 test
-  rows and slices; report median/p95/p99/maximum normalized and absolute price errors plus Delta RMSE.
-- Compare both neural variants to the exact M7 artifact on the predeclared primary metric and expose
-  near-zero, boundary, style, and type failures rather than retuning on them.
-- Time warmed Python batch inference using the M7 timer/batch protocol, version checkpoints and
-  machine-readable results, and document training cost, hardware, runtime, seeds, and limitations.
+- Add a build option that finds/links pinned ONNX Runtime only when enabled; ordinary `make check`
+  and the standard-library Monte Carlo path must remain usable without it.
+- Implement a reusable batched C++ session with preallocated/reused input and output buffers,
+  versioned metadata loading, exact Python preprocessing parity, physical price, and the frozen
+  Delta policy.
+- Integrate it behind the backend-neutral pricing boundary without embedding Python or allowing
+  direct neural calls to bypass request validation.
+- Add cross-language golden tests for raw inputs, scaled features, normalized output, physical
+  price, Delta, batch ordering, and artifact-version failures.
+
+## Task 4 — Implement guardrails and fallback
+
+- Enforce the declared M6/M8 deployment domain before inference: finite inputs, spot/strike,
+  maturity, volatility, rates/yields, observation counts, style, and type.
+- Check finite outputs and contract-specific price lower/upper bounds with one predeclared numerical
+  tolerance. Add batched spot and volatility monotonicity probes where applicable.
+- Give every rejection one explicit reason counter (domain, non-finite, price bound, spot
+  monotonicity, volatility monotonicity, artifact/runtime failure) and route the original request to
+  the trusted Monte Carlo estimator without silently changing its configuration.
+- Test every rejection reason, accepted routing, fallback result/diagnostics, counter totals, and
+  mixed accepted/rejected batch ordering. These checks are engineering guardrails, not formal
+  no-arbitrage or OOD guarantees.
+
+## Task 5 — Evaluate the guarded backend
+
+- Run the exact frozen M8 held-out rows plus a separately declared boundary/probe set through the
+  C++ router. Report overall acceptance, fallback rate by reason, accepted-set errors, and full
+  routed errors together so selective acceptance cannot hide failures.
+- Record Python-to-ONNX and Python-to-C++ parity, price/Delta metrics, batch sizes, warm-up,
+  repetitions, compiler flags, hardware, runtime versions, artifact checksums, and source commit.
+- Report C++ ONNX batch timing descriptively. Do not claim matched-error neural speedup or portfolio
+  latency until the M10 scenario benchmark.
+- Update architecture, conventions, build instructions, artifact documentation, and the M9 report
+  only from measured evidence.
 
 ## Exit gate
 
-M8 is complete only when price-only and derivative-supervised models share a fair protocol, neural
-Delta is verified as the derivative of price output, held-out/slice evidence compares both with M7,
-and all C++ and Python tests pass. If the neural model does not beat the baseline on the predeclared
-metric, report that result and justify any distinct deployment tradeoff without changing the test
-metric.
+M9 is complete only when Python and optional C++ outputs match within declared tolerances; the
+default C++ reference build remains dependency-free; all guardrail rejection reasons and Monte
+Carlo fallback paths are tested; and accepted-set error is reported alongside total/reasoned
+fallback rates.
 
 ## Scope boundary
 
-M8 does not add ONNX export/runtime, C++ neural inference, production guardrails/fallback, portfolio
-scenarios, or matched-error speedup claims. Those remain M9 and M10.
+M9 does not tune the M8 model on held-out data, add a separate Delta head, claim formal
+no-arbitrage/OOD reliability, or produce the final many-contract market-shock benchmark. Portfolio
+repricing and matched-error neural-versus-Monte-Carlo speedup remain M10.

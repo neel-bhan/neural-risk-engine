@@ -102,7 +102,7 @@ slice failures, and warmed Python inference measurements are recorded in
 [`M7_BASELINE.md`](M7_BASELINE.md). The implementation source commit remains a mechanical metadata
 finalization by the committing agent.
 
-## M8 — Derivative-supervised PyTorch model
+## M8 — Derivative-supervised PyTorch model (complete)
 
 **Learn:** automatic differentiation, multi-objective loss scaling, early stopping, and model
 capacity selection.
@@ -113,6 +113,10 @@ ablations.
 
 **Exit gate:** held-out and boundary-slice reports compare both neural variants and the simple
 baseline. Seeds, model selection, and failure cases are recorded.
+
+The frozen protocol, exact-reproduction evidence, held-out comparison, failures, and warmed Python
+timing are recorded in [`M8_NEURAL_MODEL.md`](M8_NEURAL_MODEL.md). Source commit finalization remains
+a mechanical metadata update by the committing agent.
 
 ## M9 — ONNX C++ acceleration with fallback
 

@@ -1,0 +1,927 @@
+{
+  "accepted_split_counts": {
+    "test": 180,
+    "train": 840,
+    "validation": 178
+  },
+  "artifacts": {
+    "derivative_supervised": {
+      "canonical_tensor_sha256": "3fce199452fb0b1cfc82a915819863e7709146216335245faff52f143e2f089c",
+      "metadata_fnv1a64": "b862483b20fd88ef"
+    },
+    "m7_polynomial_ridge_fnv1a64": "664f6dc270d91457",
+    "price_only": {
+      "canonical_tensor_sha256": "4eeee5bbce00387b570763644d89fac9081ea5cbedae6aa590797a144605fb5e",
+      "metadata_fnv1a64": "3117e3ce2c028461"
+    }
+  },
+  "comparisons": {
+    "derivative_supervised": {
+      "slices": {
+        "dividend_outer_10_percent": {
+          "absolute_price_error": {
+            "maximum": 2.724452454167796,
+            "median": 0.4606580282852538,
+            "p95": 2.35661516333647,
+            "p99": 2.6253324650526166
+          },
+          "count": 42,
+          "delta_rmse": 0.02773741800677786,
+          "near_zero_reference_count": 7,
+          "normalized_price_error": {
+            "maximum": 1.3176638277909198,
+            "median": 0.04282842353756777,
+            "p95": 0.5675700932256256,
+            "p99": 1.154362957852226
+          },
+          "price_floor": 1.0
+        },
+        "maturity_outer_10_percent": {
+          "count": 0,
+          "status": "no accepted held-out points in predeclared slice"
+        },
+        "near_zero_price": {
+          "absolute_price_error": {
+            "maximum": 2.046564646927143,
+            "median": 0.5169989947672442,
+            "p95": 1.7331830223896356,
+            "p99": 1.960192063025611
+          },
+          "count": 38,
+          "delta_rmse": 0.07088654363085059,
+          "near_zero_reference_count": 38,
+          "normalized_price_error": {
+            "maximum": 2.046564646927143,
+            "median": 0.5169989947672442,
+            "p95": 1.7331830223896356,
+            "p99": 1.960192063025611
+          },
+          "price_floor": 1.0
+        },
+        "rate_outer_10_percent": {
+          "absolute_price_error": {
+            "maximum": 2.9707372988933543,
+            "median": 0.7176411653641508,
+            "p95": 2.261951076463229,
+            "p99": 2.9488178720557006
+          },
+          "count": 36,
+          "delta_rmse": 0.0780496166405284,
+          "near_zero_reference_count": 13,
+          "normalized_price_error": {
+            "maximum": 2.046564646927143,
+            "median": 0.06572960574684536,
+            "p95": 1.7425879881058028,
+            "p99": 1.9648608513446117
+          },
+          "price_floor": 1.0
+        },
+        "spot_or_strike_outer_10_percent": {
+          "absolute_price_error": {
+            "maximum": 2.9707372988933543,
+            "median": 0.44072466208509053,
+            "p95": 2.420987890037456,
+            "p99": 2.9262721758798285
+          },
+          "count": 72,
+          "delta_rmse": 0.0468591493953891,
+          "near_zero_reference_count": 22,
+          "normalized_price_error": {
+            "maximum": 2.046564646927143,
+            "median": 0.05817410494063356,
+            "p95": 1.2185868420270358,
+            "p99": 1.814047405017797
+          },
+          "price_floor": 1.0
+        },
+        "style:arithmetic_asian": {
+          "absolute_price_error": {
+            "maximum": 2.9081103650714866,
+            "median": 0.42889774177592344,
+            "p95": 1.4984062859292218,
+            "p99": 2.6571161157408554
+          },
+          "count": 60,
+          "delta_rmse": 0.056446968918050885,
+          "near_zero_reference_count": 15,
+          "normalized_price_error": {
+            "maximum": 1.6276205731261997,
+            "median": 0.05237159893430458,
+            "p95": 0.7612975710661039,
+            "p99": 1.4450696008465593
+          },
+          "price_floor": 1.0
+        },
+        "style:european": {
+          "absolute_price_error": {
+            "maximum": 2.9707372988933543,
+            "median": 0.5186750752751863,
+            "p95": 1.9124669289651843,
+            "p99": 2.6165967750815504
+          },
+          "count": 60,
+          "delta_rmse": 0.036201318604292765,
+          "near_zero_reference_count": 8,
+          "normalized_price_error": {
+            "maximum": 2.046564646927143,
+            "median": 0.03853676032213757,
+            "p95": 0.9490381401733937,
+            "p99": 1.789550330943481
+          },
+          "price_floor": 1.0
+        },
+        "style:geometric_asian": {
+          "absolute_price_error": {
+            "maximum": 2.724452454167796,
+            "median": 0.4645906285688792,
+            "p95": 1.799476929949713,
+            "p99": 2.3517892654088848
+          },
+          "count": 60,
+          "delta_rmse": 0.05343890375105308,
+          "near_zero_reference_count": 15,
+          "normalized_price_error": {
+            "maximum": 1.813125230977055,
+            "median": 0.07113602919629308,
+            "p95": 1.1408967081618204,
+            "p99": 1.7576359332516696
+          },
+          "price_floor": 1.0
+        },
+        "type:call": {
+          "absolute_price_error": {
+            "maximum": 2.3704991229411476,
+            "median": 0.4253345531348316,
+            "p95": 1.6779208235052516,
+            "p99": 2.1233646419778998
+          },
+          "count": 90,
+          "delta_rmse": 0.05038136004820989,
+          "near_zero_reference_count": 25,
+          "normalized_price_error": {
+            "maximum": 2.046564646927143,
+            "median": 0.08566136432255317,
+            "p95": 1.5667590535920104,
+            "p99": 1.8388035667315645
+          },
+          "price_floor": 1.0
+        },
+        "type:put": {
+          "absolute_price_error": {
+            "maximum": 2.9707372988933543,
+            "median": 0.49127067081492126,
+            "p95": 1.8574164041270969,
+            "p99": 2.914999327791892
+          },
+          "count": 90,
+          "delta_rmse": 0.04861474428180674,
+          "near_zero_reference_count": 13,
+          "normalized_price_error": {
+            "maximum": 0.6975240408112735,
+            "median": 0.037957252397024896,
+            "p95": 0.3522238830384528,
+            "p99": 0.6394051928699547
+          },
+          "price_floor": 1.0
+        },
+        "volatility_outer_10_percent": {
+          "absolute_price_error": {
+            "maximum": 2.9707372988933543,
+            "median": 0.6523297266214443,
+            "p95": 1.8124068993440368,
+            "p99": 2.9450602560263883
+          },
+          "count": 42,
+          "delta_rmse": 0.07900619059302176,
+          "near_zero_reference_count": 12,
+          "normalized_price_error": {
+            "maximum": 1.813125230977055,
+            "median": 0.036766478866267285,
+            "p95": 1.6267869025803434,
+            "p99": 1.77456487154077
+          },
+          "price_floor": 1.0
+        }
+      },
+      "test_metrics": {
+        "absolute_price_error": {
+          "maximum": 2.9707372988933543,
+          "median": 0.4606580282852538,
+          "p95": 1.7994769299497129,
+          "p99": 2.7630206154575725
+        },
+        "count": 180,
+        "delta_rmse": 0.04950593298733406,
+        "near_zero_reference_count": 38,
+        "normalized_price_error": {
+          "maximum": 2.046564646927143,
+          "median": 0.048506268714640755,
+          "p95": 1.131889709456013,
+          "p99": 1.7388260018193367
+        },
+        "price_floor": 1.0
+      },
+      "timing": {
+        "batches": [
+          {
+            "batch_size": 1,
+            "empirical_p99_microseconds": 303.7341699999999,
+            "median_microseconds": 168.8955,
+            "repetitions": 300,
+            "warmup_repetitions": 20
+          },
+          {
+            "batch_size": 32,
+            "empirical_p99_microseconds": 487.4758299999997,
+            "median_microseconds": 233.688,
+            "repetitions": 300,
+            "warmup_repetitions": 20
+          },
+          {
+            "batch_size": 128,
+            "empirical_p99_microseconds": 677.02667,
+            "median_microseconds": 438.91700000000003,
+            "repetitions": 300,
+            "warmup_repetitions": 20
+          },
+          {
+            "batch_size": 180,
+            "empirical_p99_microseconds": 800.5694099999998,
+            "median_microseconds": 503.229,
+            "repetitions": 300,
+            "warmup_repetitions": 20
+          }
+        ],
+        "device": "cpu",
+        "dtype": "float64",
+        "numpy": "2.3.5",
+        "platform": "macOS-26.5.1-arm64-arm-64bit-Mach-O",
+        "processor": "arm",
+        "pytorch": "2.13.0",
+        "runtime": "3.14.6",
+        "scope": "Python row tensorization, PyTorch scalar-price forward, and autograd spot Delta",
+        "tail_note": "empirical p99 is a repeated local-run summary, not a production latency guarantee",
+        "timer": "time.perf_counter_ns",
+        "torch_threads": 4
+      },
+      "worst_failure_examples": [
+        {
+          "normalized_price_error": 2.046564646927143,
+          "option_style": "european",
+          "option_type": "call",
+          "parameter_id": "p000177",
+          "predicted_delta": -0.08568424648454132,
+          "predicted_price": 2.046564646927143,
+          "reference_delta": 0.0,
+          "reference_price": 0.0,
+          "spot": 64.0625,
+          "strike": 125.84362139917694
+        },
+        {
+          "normalized_price_error": 1.813125230977055,
+          "option_style": "geometric_asian",
+          "option_type": "call",
+          "parameter_id": "p000478",
+          "predicted_delta": 0.18847505942333628,
+          "predicted_price": 1.8240356400698894,
+          "reference_delta": 0.005407060972528571,
+          "reference_price": 0.010910409092834384,
+          "spot": 115.625,
+          "strike": 130.12345679012344
+        },
+        {
+          "normalized_price_error": 1.7190755738153853,
+          "option_style": "geometric_asian",
+          "option_type": "call",
+          "parameter_id": "p000499",
+          "predicted_delta": -0.05384105571981711,
+          "predicted_price": -1.7190755738153853,
+          "reference_delta": 0.0,
+          "reference_price": 0.0,
+          "spot": 81.875,
+          "strike": 134.40329218106996
+        },
+        {
+          "normalized_price_error": 1.6276205731261997,
+          "option_style": "arithmetic_asian",
+          "option_type": "call",
+          "parameter_id": "p000857",
+          "predicted_delta": -0.11708507485408,
+          "predicted_price": 1.6276205731261997,
+          "reference_delta": 0.0,
+          "reference_price": 0.0,
+          "spot": 68.75,
+          "strike": 115.30864197530863
+        },
+        {
+          "normalized_price_error": 1.6109471622090745,
+          "option_style": "european",
+          "option_type": "call",
+          "parameter_id": "p000099",
+          "predicted_delta": -0.019343324677152596,
+          "predicted_price": -1.6109471622090745,
+          "reference_delta": 0.0,
+          "reference_price": 0.0,
+          "spot": 81.875,
+          "strike": 134.40329218106996
+        }
+      ]
+    },
+    "m7_polynomial_ridge": {
+      "slices": {
+        "dividend_outer_10_percent": {
+          "absolute_price_error": {
+            "maximum": 2.2259225340816258,
+            "median": 0.6435847418303204,
+            "p95": 1.9571542957499306,
+            "p99": 2.1361697123762857
+          },
+          "count": 42,
+          "delta_rmse": 0.08281084139320034,
+          "near_zero_reference_count": 7,
+          "normalized_price_error": {
+            "maximum": 0.7398641538215314,
+            "median": 0.05231560055123448,
+            "p95": 0.410337229965671,
+            "p99": 0.6651063399511197
+          },
+          "price_floor": 1.0
+        },
+        "maturity_outer_10_percent": {
+          "count": 0,
+          "status": "no accepted held-out points in predeclared slice"
+        },
+        "near_zero_price": {
+          "absolute_price_error": {
+            "maximum": 12.335231520295737,
+            "median": 1.9977274587471214,
+            "p95": 8.431755234276674,
+            "p99": 12.18977733359111
+          },
+          "count": 38,
+          "delta_rmse": 0.17400590905621718,
+          "near_zero_reference_count": 38,
+          "normalized_price_error": {
+            "maximum": 12.335231520295737,
+            "median": 1.9977274587471214,
+            "p95": 8.431755234276674,
+            "p99": 12.18977733359111
+          },
+          "price_floor": 1.0
+        },
+        "rate_outer_10_percent": {
+          "absolute_price_error": {
+            "maximum": 12.335231520295737,
+            "median": 3.12414972627972,
+            "p95": 11.06904876304414,
+            "p99": 12.197639722061629
+          },
+          "count": 36,
+          "delta_rmse": 0.14948875270351386,
+          "near_zero_reference_count": 13,
+          "normalized_price_error": {
+            "maximum": 12.335231520295737,
+            "median": 0.20612015441002646,
+            "p95": 8.71244589633055,
+            "p99": 12.197639722061629
+          },
+          "price_floor": 1.0
+        },
+        "spot_or_strike_outer_10_percent": {
+          "absolute_price_error": {
+            "maximum": 12.335231520295737,
+            "median": 0.8362089301352604,
+            "p95": 9.737554743576883,
+            "p99": 12.056116729592263
+          },
+          "count": 72,
+          "delta_rmse": 0.12047753525759415,
+          "near_zero_reference_count": 22,
+          "normalized_price_error": {
+            "maximum": 12.335231520295737,
+            "median": 0.11649615164743765,
+            "p95": 5.308497672757847,
+            "p99": 12.056116729592263
+          },
+          "price_floor": 1.0
+        },
+        "style:arithmetic_asian": {
+          "absolute_price_error": {
+            "maximum": 11.942112096769714,
+            "median": 1.0136639049736074,
+            "p95": 7.431733056235333,
+            "p99": 11.255302274238925
+          },
+          "count": 60,
+          "delta_rmse": 0.13034834383479002,
+          "near_zero_reference_count": 15,
+          "normalized_price_error": {
+            "maximum": 11.942112096769714,
+            "median": 0.10203964310330954,
+            "p95": 3.38931057391671,
+            "p99": 9.264841113439422
+          },
+          "price_floor": 1.0
+        },
+        "style:european": {
+          "absolute_price_error": {
+            "maximum": 9.553717091119076,
+            "median": 0.7817883366848379,
+            "p95": 5.824314241167849,
+            "p99": 8.42219940010747
+          },
+          "count": 60,
+          "delta_rmse": 0.10013783872814591,
+          "near_zero_reference_count": 8,
+          "normalized_price_error": {
+            "maximum": 7.635890496184163,
+            "median": 0.06014553358153846,
+            "p95": 3.341233126357318,
+            "p99": 6.555604951103842
+          },
+          "price_floor": 1.0
+        },
+        "style:geometric_asian": {
+          "absolute_price_error": {
+            "maximum": 12.335231520295737,
+            "median": 1.0093544347108754,
+            "p95": 6.929798779128304,
+            "p99": 10.935169595859511
+          },
+          "count": 60,
+          "delta_rmse": 0.12984528720787508,
+          "near_zero_reference_count": 15,
+          "normalized_price_error": {
+            "maximum": 12.335231520295737,
+            "median": 0.11253075466455723,
+            "p95": 3.431344162827895,
+            "p99": 9.666690414684908
+          },
+          "price_floor": 1.0
+        },
+        "type:call": {
+          "absolute_price_error": {
+            "maximum": 12.335231520295737,
+            "median": 0.9755826827009675,
+            "p95": 6.6846046881709675,
+            "p99": 11.985355233357577
+          },
+          "count": 90,
+          "delta_rmse": 0.12113680730927452,
+          "near_zero_reference_count": 25,
+          "normalized_price_error": {
+            "maximum": 12.335231520295737,
+            "median": 0.1881562257798049,
+            "p95": 6.6846046881709675,
+            "p99": 11.985355233357577
+          },
+          "price_floor": 1.0
+        },
+        "type:put": {
+          "absolute_price_error": {
+            "maximum": 10.778027651802283,
+            "median": 0.9115304821350679,
+            "p95": 6.572793674754241,
+            "p99": 10.051981276544112
+          },
+          "count": 90,
+          "delta_rmse": 0.12073907671251506,
+          "near_zero_reference_count": 13,
+          "normalized_price_error": {
+            "maximum": 1.4411964590209927,
+            "median": 0.07239939266311099,
+            "p95": 1.1029509686521926,
+            "p99": 1.3550646651480325
+          },
+          "price_floor": 1.0
+        },
+        "volatility_outer_10_percent": {
+          "absolute_price_error": {
+            "maximum": 7.951732444175796,
+            "median": 2.666356417058184,
+            "p95": 7.378314052681094,
+            "p99": 7.89455714453678
+          },
+          "count": 42,
+          "delta_rmse": 0.18084561729561158,
+          "near_zero_reference_count": 12,
+          "normalized_price_error": {
+            "maximum": 7.812280493836732,
+            "median": 0.12789517758878668,
+            "p95": 5.7597707401557035,
+            "p99": 7.6450350049961795
+          },
+          "price_floor": 1.0
+        }
+      },
+      "test_metrics": {
+        "absolute_price_error": {
+          "maximum": 12.335231520295737,
+          "median": 0.9224506811761045,
+          "p95": 6.9094029878062795,
+          "p99": 11.022485385245453
+        },
+        "count": 180,
+        "delta_rmse": 0.12093810551367776,
+        "near_zero_reference_count": 38,
+        "normalized_price_error": {
+          "maximum": 12.335231520295737,
+          "median": 0.08905483584576981,
+          "p95": 3.402687344646114,
+          "p99": 8.679545130452691
+        },
+        "price_floor": 1.0
+      },
+      "worst_failure_examples": [
+        {
+          "normalized_price_error": 12.335231520295737,
+          "option_style": "geometric_asian",
+          "option_type": "call",
+          "parameter_id": "p000577",
+          "predicted_delta": -0.15798331671626129,
+          "predicted_price": 12.335231520295737,
+          "reference_delta": 0.0,
+          "reference_price": 0.0,
+          "spot": 64.0625,
+          "strike": 125.84362139917694
+        },
+        {
+          "normalized_price_error": 11.942112096769714,
+          "option_style": "arithmetic_asian",
+          "option_type": "call",
+          "parameter_id": "p000977",
+          "predicted_delta": -0.1667354818233587,
+          "predicted_price": 11.942112096769714,
+          "reference_delta": 0.0,
+          "reference_price": 0.0,
+          "spot": 64.0625,
+          "strike": 125.84362139917694
+        },
+        {
+          "normalized_price_error": 7.812280493836732,
+          "option_style": "geometric_asian",
+          "option_type": "call",
+          "parameter_id": "p000457",
+          "predicted_delta": -0.40547695534727746,
+          "predicted_price": 7.812280493836732,
+          "reference_delta": 0.0,
+          "reference_price": 0.0,
+          "spot": 68.75,
+          "strike": 115.30864197530863
+        },
+        {
+          "normalized_price_error": 7.635890496184163,
+          "option_style": "european",
+          "option_type": "call",
+          "parameter_id": "p000177",
+          "predicted_delta": -0.15484934670725423,
+          "predicted_price": 7.635890496184163,
+          "reference_delta": 0.0,
+          "reference_price": 0.0,
+          "spot": 64.0625,
+          "strike": 125.84362139917694
+        },
+        {
+          "normalized_price_error": 7.404364667396363,
+          "option_style": "arithmetic_asian",
+          "option_type": "call",
+          "parameter_id": "p000857",
+          "predicted_delta": -0.41243288297856606,
+          "predicted_price": 7.404364667396363,
+          "reference_delta": 0.0,
+          "reference_price": 0.0,
+          "spot": 68.75,
+          "strike": 115.30864197530863
+        }
+      ]
+    },
+    "price_only": {
+      "slices": {
+        "dividend_outer_10_percent": {
+          "absolute_price_error": {
+            "maximum": 4.804693840885925,
+            "median": 0.49977719828884865,
+            "p95": 2.0239776255873587,
+            "p99": 3.7637882649639596
+          },
+          "count": 42,
+          "delta_rmse": 0.04762819567816179,
+          "near_zero_reference_count": 7,
+          "normalized_price_error": {
+            "maximum": 1.1759862801060965,
+            "median": 0.047016994311275054,
+            "p95": 0.9598093749955285,
+            "p99": 1.1166559396988671
+          },
+          "price_floor": 1.0
+        },
+        "maturity_outer_10_percent": {
+          "count": 0,
+          "status": "no accepted held-out points in predeclared slice"
+        },
+        "near_zero_price": {
+          "absolute_price_error": {
+            "maximum": 2.495010171723043,
+            "median": 0.6319469348753541,
+            "p95": 1.907123480859832,
+            "p99": 2.364559559382535
+          },
+          "count": 38,
+          "delta_rmse": 0.1096958858610871,
+          "near_zero_reference_count": 38,
+          "normalized_price_error": {
+            "maximum": 2.495010171723043,
+            "median": 0.6319469348753541,
+            "p95": 1.907123480859832,
+            "p99": 2.364559559382535
+          },
+          "price_floor": 1.0
+        },
+        "rate_outer_10_percent": {
+          "absolute_price_error": {
+            "maximum": 3.3116504928508377,
+            "median": 0.9567085287793279,
+            "p95": 2.5249024013657557,
+            "p99": 3.0676755019559065
+          },
+          "count": 36,
+          "delta_rmse": 0.1505141668180338,
+          "near_zero_reference_count": 13,
+          "normalized_price_error": {
+            "maximum": 2.495010171723043,
+            "median": 0.08003806126239829,
+            "p95": 1.9348078888976317,
+            "p99": 2.371610943833372
+          },
+          "price_floor": 1.0
+        },
+        "spot_or_strike_outer_10_percent": {
+          "absolute_price_error": {
+            "maximum": 4.804693840885925,
+            "median": 0.6129209855546744,
+            "p95": 2.587935859969224,
+            "p99": 3.744633063781022
+          },
+          "count": 72,
+          "delta_rmse": 0.09963182862280516,
+          "near_zero_reference_count": 22,
+          "normalized_price_error": {
+            "maximum": 2.495010171723043,
+            "median": 0.05484183647266537,
+            "p95": 1.272022333679461,
+            "p99": 2.2446860237182844
+          },
+          "price_floor": 1.0
+        },
+        "style:arithmetic_asian": {
+          "absolute_price_error": {
+            "maximum": 4.804693840885925,
+            "median": 0.5114555496307525,
+            "p95": 2.1564277637569655,
+            "p99": 3.756024954608216
+          },
+          "count": 60,
+          "delta_rmse": 0.10327010145750601,
+          "near_zero_reference_count": 15,
+          "normalized_price_error": {
+            "maximum": 1.8655968688031335,
+            "median": 0.07081909305674605,
+            "p95": 1.1773014182965003,
+            "p99": 1.5846405583791794
+          },
+          "price_floor": 1.0
+        },
+        "style:european": {
+          "absolute_price_error": {
+            "maximum": 2.5661368533399482,
+            "median": 0.5032713834239395,
+            "p95": 2.1513430320544162,
+            "p99": 2.524172111185974
+          },
+          "count": 60,
+          "delta_rmse": 0.08165047614461797,
+          "near_zero_reference_count": 8,
+          "normalized_price_error": {
+            "maximum": 2.495010171723043,
+            "median": 0.04022718806828167,
+            "p95": 0.6532451069465466,
+            "p99": 2.286994330423311
+          },
+          "price_floor": 1.0
+        },
+        "style:geometric_asian": {
+          "absolute_price_error": {
+            "maximum": 3.3116504928508377,
+            "median": 0.6713496276183422,
+            "p95": 1.6713179855314797,
+            "p99": 2.694657556498965
+          },
+          "count": 60,
+          "delta_rmse": 0.10633759371013912,
+          "near_zero_reference_count": 15,
+          "normalized_price_error": {
+            "maximum": 1.3702015991123475,
+            "median": 0.05535297287213274,
+            "p95": 1.0616935017351283,
+            "p99": 1.2594479922422779
+          },
+          "price_floor": 1.0
+        },
+        "type:call": {
+          "absolute_price_error": {
+            "maximum": 2.495010171723043,
+            "median": 0.5411352714933476,
+            "p95": 1.3234265911960252,
+            "p99": 2.181223563660737
+          },
+          "count": 90,
+          "delta_rmse": 0.07848732694990782,
+          "near_zero_reference_count": 25,
+          "normalized_price_error": {
+            "maximum": 2.495010171723043,
+            "median": 0.06717161792266466,
+            "p95": 1.175766949725371,
+            "p99": 2.181223563660737
+          },
+          "price_floor": 1.0
+        },
+        "type:put": {
+          "absolute_price_error": {
+            "maximum": 4.804693840885925,
+            "median": 0.5403233797909517,
+            "p95": 2.455592442328091,
+            "p99": 3.4758852611346964
+          },
+          "count": 90,
+          "delta_rmse": 0.11372131787293721,
+          "near_zero_reference_count": 13,
+          "normalized_price_error": {
+            "maximum": 1.3893997324913496,
+            "median": 0.04502078105979908,
+            "p95": 0.6404008776354524,
+            "p99": 1.231113167964479
+          },
+          "price_floor": 1.0
+        },
+        "volatility_outer_10_percent": {
+          "absolute_price_error": {
+            "maximum": 3.3116504928508377,
+            "median": 0.824619078337097,
+            "p95": 2.3115805237736424,
+            "p99": 3.0258512178024883
+          },
+          "count": 42,
+          "delta_rmse": 0.14694876161688997,
+          "near_zero_reference_count": 12,
+          "normalized_price_error": {
+            "maximum": 2.1424409491811263,
+            "median": 0.06204274499427896,
+            "p95": 1.3492240606766284,
+            "p99": 2.028934876226148
+          },
+          "price_floor": 1.0
+        }
+      },
+      "test_metrics": {
+        "absolute_price_error": {
+          "maximum": 4.804693840885925,
+          "median": 0.5411352714933476,
+          "p95": 2.1328208567013283,
+          "p99": 3.087004873121635
+        },
+        "count": 180,
+        "delta_rmse": 0.09770567698578049,
+        "near_zero_reference_count": 38,
+        "normalized_price_error": {
+          "maximum": 2.495010171723043,
+          "median": 0.05116222924095467,
+          "p95": 1.0616691316928237,
+          "p99": 1.9237341256825142
+        },
+        "price_floor": 1.0
+      },
+      "timing": {
+        "batches": [
+          {
+            "batch_size": 1,
+            "empirical_p99_microseconds": 397.63865999999945,
+            "median_microseconds": 192.85399999999998,
+            "repetitions": 300,
+            "warmup_repetitions": 20
+          },
+          {
+            "batch_size": 32,
+            "empirical_p99_microseconds": 536.077749999999,
+            "median_microseconds": 260.6665,
+            "repetitions": 300,
+            "warmup_repetitions": 20
+          },
+          {
+            "batch_size": 128,
+            "empirical_p99_microseconds": 753.6712499999998,
+            "median_microseconds": 478.08299999999997,
+            "repetitions": 300,
+            "warmup_repetitions": 20
+          },
+          {
+            "batch_size": 180,
+            "empirical_p99_microseconds": 925.8049100000001,
+            "median_microseconds": 566.729,
+            "repetitions": 300,
+            "warmup_repetitions": 20
+          }
+        ],
+        "device": "cpu",
+        "dtype": "float64",
+        "numpy": "2.3.5",
+        "platform": "macOS-26.5.1-arm64-arm-64bit-Mach-O",
+        "processor": "arm",
+        "pytorch": "2.13.0",
+        "runtime": "3.14.6",
+        "scope": "Python row tensorization, PyTorch scalar-price forward, and autograd spot Delta",
+        "tail_note": "empirical p99 is a repeated local-run summary, not a production latency guarantee",
+        "timer": "time.perf_counter_ns",
+        "torch_threads": 4
+      },
+      "worst_failure_examples": [
+        {
+          "normalized_price_error": 2.495010171723043,
+          "option_style": "european",
+          "option_type": "call",
+          "parameter_id": "p000177",
+          "predicted_delta": -0.07212008377361877,
+          "predicted_price": 2.495010171723043,
+          "reference_delta": 0.0,
+          "reference_price": 0.0,
+          "spot": 64.0625,
+          "strike": 125.84362139917694
+        },
+        {
+          "normalized_price_error": 2.1424409491811263,
+          "option_style": "european",
+          "option_type": "call",
+          "parameter_id": "p000099",
+          "predicted_delta": -0.018959672516350147,
+          "predicted_price": -2.1424409491811263,
+          "reference_delta": 0.0,
+          "reference_price": 0.0,
+          "spot": 81.875,
+          "strike": 134.40329218106996
+        },
+        {
+          "normalized_price_error": 1.8655968688031335,
+          "option_style": "arithmetic_asian",
+          "option_type": "call",
+          "parameter_id": "p000899",
+          "predicted_delta": -0.18375871929730678,
+          "predicted_price": -1.8655968688031335,
+          "reference_delta": 0.0,
+          "reference_price": 0.0,
+          "spot": 81.875,
+          "strike": 134.40329218106996
+        },
+        {
+          "normalized_price_error": 1.3893997324913496,
+          "option_style": "arithmetic_asian",
+          "option_type": "put",
+          "parameter_id": "p001037",
+          "predicted_delta": -0.2459537512444594,
+          "predicted_price": 1.7271349710355293,
+          "reference_delta": -0.10391599592090482,
+          "reference_price": 0.33773523854417964,
+          "spot": 71.25,
+          "strike": 63.95061728395062
+        },
+        {
+          "normalized_price_error": 1.3702015991123475,
+          "option_style": "geometric_asian",
+          "option_type": "call",
+          "parameter_id": "p000597",
+          "predicted_delta": -0.124117373978036,
+          "predicted_price": -1.3702015991123475,
+          "reference_delta": 0.0,
+          "reference_price": 0.0,
+          "spot": 70.9375,
+          "strike": 106.09053497942386
+        }
+      ]
+    }
+  },
+  "dataset": {
+    "config_fnv1a64": "ae034bf46ccb5285",
+    "labels_fnv1a64": "b2b609903da61cf0",
+    "manifest_fnv1a64": "f8468ba180f2eac2",
+    "schema_version": "nre.dataset.v1"
+  },
+  "limitations": [
+    "The held-out labels retain documented Monte Carlo sampling noise.",
+    "The test set contains 180 accepted points and some predeclared boundary slices are empty.",
+    "This is in-domain held-out evidence only; it supports no out-of-distribution claim.",
+    "No formal no-arbitrage guarantee, calibrated confidence, C++ inference, or fallback exists in M8.",
+    "Python CPU timings include tensorization and autograd and are not low-latency claims."
+  ],
+  "primary_comparison_metric": "held-out median normalized price error with fixed one-currency-unit floor",
+  "result_version": "nre.neural.evaluation.v1",
+  "source_implementation_commit": "PENDING",
+  "test_access_policy": "one final held-out evaluation after validation-only selection; no post-test tuning"
+}

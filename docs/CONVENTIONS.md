@@ -153,3 +153,16 @@ The polynomial-ridge baseline fits price divided by strike and Delta as separate
 targets. Its reported Delta RMSE is a useful empirical comparison, but the Delta is not derived
 from the price output and has no derivative-consistency claim. M8 neural Delta must instead be
 derived from the scalar neural price through automatic differentiation.
+
+## M8 neural representation and derivative supervision
+
+The M8 MLP consumes the same nine M7 base features after means and scales fitted on accepted train
+rows only. Its single output is price divided by strike; physical price is strike times that
+output. Spot Delta is never a separately predicted output. PyTorch differentiates physical price
+with respect to an unscaled spot tensor through log moneyness and the stored feature scaling.
+
+The price loss normalizes squared `price/strike` error by the training-only standard deviation of
+`price/strike`. The Delta loss normalizes squared Delta error by the training-only Delta standard
+deviation. Derivative supervision gives the two normalized terms equal weight. Model and
+checkpoint selection use validation median normalized price error under the unchanged one-unit
+M7 price floor. Held-out test rows do not influence selection.

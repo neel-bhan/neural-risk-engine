@@ -1,0 +1,23 @@
+{
+  "config_version": "nre.neural.experiment.v1",
+  "seed": 2026071608,
+  "device": "cpu",
+  "dtype": "float64",
+  "hidden_layer_candidates": [[32, 32], [64, 64]],
+  "weight_decay_candidates": [0.0, 0.000001],
+  "activation": "tanh",
+  "optimizer": "Adam",
+  "learning_rate": 0.003,
+  "schedule": {"name": "StepLR", "step_size_epochs": 100, "gamma": 0.5},
+  "batch_size": 256,
+  "maximum_epochs": 400,
+  "early_stopping_patience": 60,
+  "minimum_epochs": 100,
+  "price_floor": 1.0,
+  "price_loss": "mean squared error of price/strike divided by the training-only standard deviation of price/strike squared",
+  "delta_loss": "mean squared Delta error divided by training-only Delta standard deviation squared",
+  "derivative_supervision_weight": 1.0,
+  "selection_metric": "validation median normalized price error",
+  "selection_tie_breakers": ["validation p99 normalized price error", "Delta RMSE", "parameter count"],
+  "test_access_policy": "test is not passed to training or selection; evaluate once after both variants are frozen"
+}

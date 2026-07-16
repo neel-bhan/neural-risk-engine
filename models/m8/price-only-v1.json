@@ -1,0 +1,208 @@
+{
+  "artifact_version": "nre.neural.artifact.v1",
+  "dataset": {
+    "config_fnv1a64": "ae034bf46ccb5285",
+    "labels_fnv1a64": "b2b609903da61cf0",
+    "manifest_fnv1a64": "f8468ba180f2eac2",
+    "schema_version": "nre.dataset.v1"
+  },
+  "environment": {
+    "deterministic_algorithms": true,
+    "device": "cpu",
+    "numpy": "2.3.5",
+    "platform": "macOS-26.5.1-arm64-arm-64bit-Mach-O",
+    "processor": "arm",
+    "python": "3.14.6",
+    "pytorch": "2.13.0",
+    "torch_threads": 1
+  },
+  "experiment": {
+    "batch_size": 256,
+    "config_fnv1a64": "e148b19107434b52",
+    "config_path": "python/config/m8-neural-v1.json",
+    "delta_loss": "mean squared Delta error divided by training-only Delta standard deviation squared",
+    "derivative_supervision_weight": 0.0,
+    "early_stopping_patience": 60,
+    "elapsed_training_seconds": 6.977283375003026,
+    "fit_split": "train",
+    "learning_rate": 0.003,
+    "maximum_epochs": 400,
+    "minimum_epochs": 100,
+    "optimizer": "Adam",
+    "price_loss": "mean squared error of price/strike divided by the training-only standard deviation of price/strike squared",
+    "primary_selection_metric": "validation median normalized price error",
+    "schedule": {
+      "gamma": 0.5,
+      "name": "StepLR",
+      "step_size_epochs": 100
+    },
+    "seed": 2026071608,
+    "selection_split": "validation",
+    "test_access_during_training": false
+  },
+  "m9_export_contract": {
+    "input": "nine scaled float64 base features in recorded order",
+    "onnx_exported": false,
+    "output": "one normalized scalar price per row",
+    "physical_price": "strike * model_output"
+  },
+  "model": {
+    "activation": "tanh",
+    "delta_representation": "autograd derivative of physical scalar price with respect to unscaled spot; no Delta head",
+    "dtype": "float64",
+    "hidden_layers": [
+      64,
+      64
+    ],
+    "input_feature_names": [
+      "log_spot_over_strike",
+      "maturity_years",
+      "volatility",
+      "risk_free_rate",
+      "dividend_yield",
+      "log_observations",
+      "style_geometric_asian",
+      "style_arithmetic_asian",
+      "type_put"
+    ],
+    "model_version": "nre.model.scalar_price_mlp.v1",
+    "output_count": 1,
+    "output_representation": "price_divided_by_strike",
+    "parameter_count": 4865
+  },
+  "preprocessing": {
+    "base_feature_names": [
+      "log_spot_over_strike",
+      "maturity_years",
+      "volatility",
+      "risk_free_rate",
+      "dividend_yield",
+      "log_observations",
+      "style_geometric_asian",
+      "style_arithmetic_asian",
+      "type_put"
+    ],
+    "delta_scale": 0.5930767076180459,
+    "fit_split": "train",
+    "means": [
+      0.0008263618013432813,
+      1.0884000000000003,
+      0.3214264889629319,
+      0.03931222496511755,
+      0.034372713791398904,
+      2.029990152487808,
+      0.3333333333333333,
+      0.3333333333333333,
+      0.5
+    ],
+    "normalized_price_scale": 0.2096201574173124,
+    "scales": [
+      0.3469082328300068,
+      0.5136795109793647,
+      0.1588938926206778,
+      0.03439637376594137,
+      0.02572623399601566,
+      1.5757423100560761,
+      0.47140452079103323,
+      0.47140452079103445,
+      0.5
+    ],
+    "spot_chain_rule": "z0=(log(spot/strike)-mean0)/scale0; price=strike*network(z); Delta=dprice/dspot via autograd",
+    "version": "nre.preprocessing.neural.v1"
+  },
+  "selected_candidate": {
+    "best_epoch": 385,
+    "candidate_index": 3,
+    "epochs_completed": 400,
+    "hidden_layers": [
+      64,
+      64
+    ],
+    "parameter_count": 4865,
+    "seed": 2026071611,
+    "validation_metrics": {
+      "delta_rmse": 0.12694664819716459,
+      "median_normalized_price_error": 0.05509077850122185,
+      "p99_normalized_price_error": 4.503720318345293
+    },
+    "weight_decay": 1e-06
+  },
+  "source_implementation_commit": "PENDING",
+  "state": {
+    "canonical_tensor_sha256": "4eeee5bbce00387b570763644d89fac9081ea5cbedae6aa590797a144605fb5e",
+    "file": "price-only-v1.pt",
+    "file_fnv1a64": "bfc7227f304f6546",
+    "format": "PyTorch state_dict; weights_only load"
+  },
+  "validation_candidates": [
+    {
+      "best_epoch": 385,
+      "candidate_index": 3,
+      "epochs_completed": 400,
+      "hidden_layers": [
+        64,
+        64
+      ],
+      "parameter_count": 4865,
+      "seed": 2026071611,
+      "validation_metrics": {
+        "delta_rmse": 0.12694664819716459,
+        "median_normalized_price_error": 0.05509077850122185,
+        "p99_normalized_price_error": 4.503720318345293
+      },
+      "weight_decay": 1e-06
+    },
+    {
+      "best_epoch": 329,
+      "candidate_index": 2,
+      "epochs_completed": 389,
+      "hidden_layers": [
+        64,
+        64
+      ],
+      "parameter_count": 4865,
+      "seed": 2026071610,
+      "validation_metrics": {
+        "delta_rmse": 0.1263037826175642,
+        "median_normalized_price_error": 0.06635761827482842,
+        "p99_normalized_price_error": 4.722129249231663
+      },
+      "weight_decay": 0.0
+    },
+    {
+      "best_epoch": 151,
+      "candidate_index": 1,
+      "epochs_completed": 211,
+      "hidden_layers": [
+        32,
+        32
+      ],
+      "parameter_count": 1409,
+      "seed": 2026071609,
+      "validation_metrics": {
+        "delta_rmse": 0.14213951146741388,
+        "median_normalized_price_error": 0.076434653877097,
+        "p99_normalized_price_error": 6.319502031520015
+      },
+      "weight_decay": 1e-06
+    },
+    {
+      "best_epoch": 300,
+      "candidate_index": 0,
+      "epochs_completed": 360,
+      "hidden_layers": [
+        32,
+        32
+      ],
+      "parameter_count": 1409,
+      "seed": 2026071608,
+      "validation_metrics": {
+        "delta_rmse": 0.1265397331829309,
+        "median_normalized_price_error": 0.077620599770889,
+        "p99_normalized_price_error": 3.7556479689257225
+      },
+      "weight_decay": 0.0
+    }
+  ],
+  "variant": "price_only"
+}

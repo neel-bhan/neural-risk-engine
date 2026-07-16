@@ -5,13 +5,17 @@ BUILD_DIR := build/make
 
 .PHONY: all run test check convergence variance delta-validation performance dataset-small \
 	dataset-large dataset-m7 dataset-verify dataset-reproduce python-bootstrap python-test \
-	baseline-train baseline-evaluate baseline-reproduce clean
+	baseline-train baseline-evaluate baseline-reproduce neural-train neural-evaluate \
+	neural-reproduce clean
 
 PYTHON := .venv/bin/python
 M7_DATASET := data/generated/m7-baseline
 M7_CONFIG := data/config/m7-baseline.cfg
 M7_ARTIFACT := models/m7/polynomial-ridge-v1.json
 M7_RESULTS := benchmarks/m7-polynomial-ridge-v1.json
+M8_EXPERIMENT := python/config/m8-neural-v1.json
+M8_ARTIFACT_DIR := models/m8
+M8_RESULTS := benchmarks/m8-neural-v1.json
 
 all: $(BUILD_DIR)/nre_cli
 
@@ -152,12 +156,12 @@ dataset-reproduce: $(BUILD_DIR)/nre_dataset
 	cmp data/generated/m6-small/labels.csv data/generated/m6-small-reproduction/labels.csv
 	cmp data/generated/m6-small/manifest.json data/generated/m6-small-reproduction/manifest.json
 
-.venv/.m7-ready: python/requirements-m7.txt
+.venv/.m8-ready: python/requirements-m8.txt
 	python3 -m venv .venv
-	$(PYTHON) -m pip install --disable-pip-version-check -r python/requirements-m7.txt
+	$(PYTHON) -m pip install --disable-pip-version-check -r python/requirements-m8.txt
 	touch $@
 
-python-bootstrap: .venv/.m7-ready
+python-bootstrap: .venv/.m8-ready
 
 python-test: python-bootstrap
 	PYTHONPATH=python $(PYTHON) -m unittest discover -s python/tests -v
@@ -177,6 +181,24 @@ baseline-reproduce: python-bootstrap
 	PYTHONPATH=python $(PYTHON) -m nre_baseline.cli train --dataset $(M7_DATASET) \
 		--config $(M7_CONFIG) --artifact models/generated/m7-reproduction-b.json
 	cmp models/generated/m7-reproduction-a.json models/generated/m7-reproduction-b.json
+
+neural-train: python-bootstrap
+	PYTHONPATH=python $(PYTHON) -m nre_neural.cli train --dataset $(M7_DATASET) \
+		--config $(M7_CONFIG) --experiment $(M8_EXPERIMENT) --output-dir $(M8_ARTIFACT_DIR)
+
+neural-evaluate: python-bootstrap
+	PYTHONPATH=python $(PYTHON) -m nre_neural.cli evaluate --dataset $(M7_DATASET) \
+		--config $(M7_CONFIG) --price-only $(M8_ARTIFACT_DIR)/price-only-v1.json \
+		--derivative-supervised $(M8_ARTIFACT_DIR)/derivative-supervised-v1.json \
+		--baseline $(M7_ARTIFACT) --output $(M8_RESULTS)
+
+neural-reproduce: python-bootstrap
+	rm -rf models/generated/m8-reproduction
+	PYTHONPATH=python $(PYTHON) -m nre_neural.cli train --dataset $(M7_DATASET) \
+		--config $(M7_CONFIG) --experiment $(M8_EXPERIMENT) \
+		--output-dir models/generated/m8-reproduction
+	PYTHONPATH=python $(PYTHON) -m nre_neural.cli compare-reproduction \
+		--reference-dir $(M8_ARTIFACT_DIR) --reproduction-dir models/generated/m8-reproduction
 
 check: test python-test
 

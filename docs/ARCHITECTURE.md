@@ -111,6 +111,14 @@ plainly separate Delta target; validation alone selects the declared degree and 
 The JSON artifact carries the fitted preprocessing, basis order, coefficients, dataset provenance,
 and selection table. This baseline is offline comparison evidence, not a C++ pricing backend.
 
+M8 adds a second offline Python package above the same validated loader. A smooth float64 MLP emits
+one `price/strike` scalar and has no Delta head. Training constructs physical price, differentiates
+it with respect to unscaled spot through log-moneyness preprocessing, and optionally supervises
+that derivative against the trusted pathwise labels. Both ablations share the same fixed
+capacity/regularization search and validation-only checkpoint policy. Versioned `.pt` state plus
+JSON feature order, preprocessing, architecture, checksums, and output semantics form the M9 export
+input; no ONNX or C++ neural dependency is introduced in M8.
+
 Dependencies should point downward from orchestration to small numerical components. In particular,
 `domain` and `analytics` must not depend on Monte Carlo or ML.
 

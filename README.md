@@ -8,10 +8,11 @@ against analytical references, and uses a guarded neural surrogate for eligible 
 The neural model is an accelerator: invalid, unsafe, or out-of-domain results fall back to Monte
 Carlo.
 
-> Status: M7 is complete. The dependency-free C++ engine remains the trusted label backend, and a
-> deterministic polynomial-ridge Python baseline now provides the comparison floor for M8. The
-> held-out baseline evidence is in [`docs/M7_BASELINE.md`](docs/M7_BASELINE.md). PyTorch and ONNX are
-> not implemented yet.
+> Status: M8 is complete. The dependency-free C++ engine remains the trusted label backend. A
+> scalar-price PyTorch MLP now supplies Delta only through automatic differentiation and is
+> compared fairly with the M7 polynomial-ridge baseline. Evidence and limitations are in
+> [`docs/M8_NEURAL_MODEL.md`](docs/M8_NEURAL_MODEL.md). ONNX/C++ neural inference and guarded
+> fallback remain M9 work.
 
 ## Why this project is ordered this way
 
@@ -49,6 +50,9 @@ make python-test
 make dataset-m7
 make baseline-reproduce
 make baseline-evaluate
+make neural-train
+make neural-reproduce
+make neural-evaluate
 make CXXFLAGS='-std=c++20 -O3 -DNDEBUG -Wall -Wextra -Wpedantic -Wconversion -Wshadow -Werror' performance
 ```
 
@@ -76,6 +80,11 @@ environment when needed. `make dataset-m7` generates the ignored 1,200-row label
 `make baseline-reproduce` proves byte-identical deterministic training, and
 `make baseline-evaluate` writes the versioned held-out summary. See
 [`python/README.md`](python/README.md) and [`docs/M7_BASELINE.md`](docs/M7_BASELINE.md).
+
+M8 layers pinned PyTorch onto the same isolated environment. `make neural-train` performs the
+validation-only capacity/regularization search for both ablations, `make neural-reproduce`
+verifies exact selected tensor checksums, and `make neural-evaluate` reproduces the frozen
+held-out/slice/timing report. See [`docs/M8_NEURAL_MODEL.md`](docs/M8_NEURAL_MODEL.md).
 
 The equivalent CMake workflow is available once CMake 3.24+ is installed:
 
