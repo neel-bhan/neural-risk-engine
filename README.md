@@ -8,8 +8,9 @@ against analytical references, and uses a guarded neural surrogate for eligible 
 The neural model is an accelerator: invalid, unsafe, or out-of-domain results fall back to Monte
 Carlo.
 
-> Status: foundation scaffold only. Pricing, Monte Carlo, ML, ONNX, and benchmark claims are not
-> implemented yet. The current executable validates basic contract and market inputs.
+> Status: M1 analytical reference pricing is complete for European and discrete geometric-Asian
+> options. Monte Carlo, arithmetic-Asian pricing, ML, ONNX, and benchmark claims are not
+> implemented yet.
 
 ## Why this project is ordered this way
 
@@ -31,7 +32,7 @@ scalar Monte Carlo -> variance reduction -> multithreaded engine
                                         portfolio risk benchmark
 ```
 
-## Build the foundation scaffold
+## Build and test
 
 Only an Apple Clang or GCC-compatible C++20 compiler and `make` are needed right now.
 
@@ -92,4 +93,3 @@ arbitrage guarantees are out of scope for the first complete version.
 Resume bullets remain templates until the benchmark protocol produces real values. See
 [the roadmap](docs/ROADMAP.md#resume-ready-finish-line) for the evidence required before filling
 them in.
-

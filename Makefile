@@ -13,20 +13,26 @@ $(BUILD_DIR):
 $(BUILD_DIR)/domain.o: src/domain.cpp include/nre/domain.hpp | $(BUILD_DIR)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
-$(BUILD_DIR)/nre_cli: src/main.cpp $(BUILD_DIR)/domain.o | $(BUILD_DIR)
+$(BUILD_DIR)/analytics.o: src/analytics.cpp include/nre/analytics.hpp include/nre/domain.hpp | $(BUILD_DIR)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+
+$(BUILD_DIR)/nre_cli: src/main.cpp $(BUILD_DIR)/domain.o $(BUILD_DIR)/analytics.o | $(BUILD_DIR)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@
 
 $(BUILD_DIR)/nre_tests: tests/domain_tests.cpp $(BUILD_DIR)/domain.o | $(BUILD_DIR)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@
 
+$(BUILD_DIR)/analytics_tests: tests/analytics_tests.cpp $(BUILD_DIR)/domain.o $(BUILD_DIR)/analytics.o | $(BUILD_DIR)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@
+
 run: $(BUILD_DIR)/nre_cli
 	./$(BUILD_DIR)/nre_cli
 
-test: $(BUILD_DIR)/nre_tests
+test: $(BUILD_DIR)/nre_tests $(BUILD_DIR)/analytics_tests
 	./$(BUILD_DIR)/nre_tests
+	./$(BUILD_DIR)/analytics_tests
 
 check: test
 
 clean:
 	rm -rf build
-

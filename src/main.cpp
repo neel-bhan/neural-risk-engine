@@ -19,10 +19,9 @@ int main() {
     return 1;
   }
 
-  std::cout << "Neural Risk Engine foundation is ready.\n"
+  std::cout << "Neural Risk Engine analytical references are ready.\n"
             << "Example: " << nre::to_string(contract.style) << ' '
             << nre::to_string(contract.type) << ", strike=" << contract.strike
             << ", observations=" << contract.observations << '\n'
-            << "Next milestone: Black-Scholes analytical reference pricing.\n";
+            << "Next milestone: correct scalar Monte Carlo pricing.\n";
 }
-

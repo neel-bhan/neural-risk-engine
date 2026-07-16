@@ -28,6 +28,14 @@ Analytical pricers are test oracles and control-variate inputs, not a universal 
 an offline training and evaluation environment. Production-style C++ inference must not embed a
 Python interpreter.
 
+## Analytical API error policy
+
+Analytical pricing functions accept contracts and market states that callers have already checked
+with the domain `validate` functions. A style-specific analytical function throws
+`std::invalid_argument` when given a different, otherwise valid option style rather than silently
+applying the wrong formula. Successful calls return a small `PricingResult` containing `price` and
+spot `delta`; pricing formulas are added only in their corresponding roadmap tasks.
+
 ## Planned C++ modules
 
 - `domain`: contracts, market inputs, validation, stable units.
@@ -73,4 +81,3 @@ and overall fallback rate to prevent selective reporting.
 The foundation and trusted scalar engine build with the C++ standard library. Add dependencies only
 when a milestone needs them and document installation and version constraints then. Candidate later
 dependencies include a test/benchmark framework and ONNX Runtime, but none is required yet.
-

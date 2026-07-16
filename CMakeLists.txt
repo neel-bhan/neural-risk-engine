@@ -5,6 +5,7 @@ project(neural_risk_engine VERSION 0.1.0 LANGUAGES CXX)
 option(NRE_WARNINGS_AS_ERRORS "Treat compiler warnings as errors" OFF)
 
 add_library(nre_core
+    src/analytics.cpp
     src/domain.cpp
 )
 add_library(nre::core ALIAS nre_core)
@@ -38,5 +39,8 @@ if(BUILD_TESTING)
   add_executable(nre_tests tests/domain_tests.cpp)
   target_link_libraries(nre_tests PRIVATE nre::core)
   add_test(NAME domain_tests COMMAND nre_tests)
-endif()
 
+  add_executable(nre_analytics_tests tests/analytics_tests.cpp)
+  target_link_libraries(nre_analytics_tests PRIVATE nre::core)
+  add_test(NAME analytics_tests COMMAND nre_analytics_tests)
+endif()
