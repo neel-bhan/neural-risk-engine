@@ -7,6 +7,10 @@ M2 introduces `m2_convergence.cpp`, a numerical validation experiment rather tha
 benchmark. Run it with `make convergence`; it is intentionally excluded from `make check` so unit
 tests remain short and deterministic.
 
+M3 adds `m3_variance_reduction.cpp`, a matched-draw comparison of the plain arithmetic-Asian,
+antithetic, and independent-pilot control-variate estimators. Run it with `make variance`; it is
+also excluded from `make check`.
+
 A benchmark report must include commit, compiler and flags, build type, CPU/hardware, thread count,
 seed policy, path/contract/scenario counts, warm-up, repetitions, timing method, and definitions of
 reported metrics.

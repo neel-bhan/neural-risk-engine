@@ -73,8 +73,14 @@ All analytical formulas, simulations, datasets, and tests must use this same mon
   `sqrt`, `sin`, and `cos` may still occur across math-library implementations, so reproducibility
   claims apply to a fixed toolchain and platform.
 - Correctness tests use fixed seeds and statistical tolerances.
-- In M2, one effective path means one independently generated discounted payoff sample.
-- Performance results must state whether a “path” means one payoff sample or an antithetic pair.
+- For plain pricing, one effective path means one independently generated discounted payoff sample,
+  and raw paths equal effective paths.
+- For antithetic pricing, one effective sample is the mean of discounted payoffs from `z` and `-z`;
+  it uses two raw paths.
+- For control-variate pricing, effective paths count adjusted pricing samples. Raw paths include both
+  the independent coefficient-estimation pilot and the pricing sample.
+- Performance results must state whether a “path” means a raw evolution, one plain payoff sample, or
+  an antithetic pair.
 - Antithetic and control-variate comparisons must reuse the same draws.
 - Threaded runs derive non-overlapping deterministic streams from a master seed; the precise stream
   construction will be chosen and documented in its milestone.

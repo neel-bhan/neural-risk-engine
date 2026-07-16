@@ -48,11 +48,19 @@ spot `delta`; pricing formulas are added only in their corresponding roadmap tas
 - `risk`: portfolio scenarios, Delta results, acceptance/fallback counters.
 - `benchmark`: isolated performance entry points; never part of correctness tests.
 
-The M2 scalar implementation now instantiates `statistics`, `random`, and `monte_carlo` as separate
+The scalar implementation instantiates `statistics`, `random`, and `monte_carlo` as separate
 standard-library-only modules. Random generation owns only seeded normal draws; deterministic GBM
 evolution accepts supplied draws; payoff calculation is independent; and discounted payoff samples
-flow into streaming statistics. The geometric-Asian pricer allocates one reusable draw buffer
-outside its path loop.
+flow into streaming statistics. The geometric- and arithmetic-Asian pricers share the same path
+simulation loop and allocate one reusable draw buffer outside it. Their path-average helpers use the
+same equally spaced post-initial observation schedule.
+
+M3 adds two arithmetic-Asian variance-reduction paths without changing the domain layer.
+Antithetic sampling treats the mean payoff from `z` and `-z` as one effective sample. The geometric
+control variate uses paired arithmetic and geometric payoffs from one path evolution, fits its
+coefficient on a separate explicitly seeded pilot sample, and uses the M1 analytical geometric
+price as the known expectation. A numerically degenerate control variance falls back to the plain
+estimator and is exposed in result diagnostics.
 
 Dependencies should point downward from orchestration to small numerical components. In particular,
 `domain` and `analytics` must not depend on Monte Carlo or ML.

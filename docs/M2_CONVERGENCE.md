@@ -5,7 +5,7 @@ pricers. It is not a latency or throughput benchmark.
 
 ## Method
 
-- Source: `codex/m2-streaming-statistics`, uncommitted M2 working tree based on `c247ef0`.
+- Source: commit `dc10304332ede9dc4bfc546528c7e9e550297822`.
 - Date: 2026-07-16.
 - Compiler: Apple Clang 17.0.0 (`clang-1700.0.13.5`).
 - Flags: C++20, `-O3 -DNDEBUG -Wall -Wextra -Wpedantic -Wconversion -Wshadow -Werror`.

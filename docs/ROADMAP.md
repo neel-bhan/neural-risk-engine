@@ -33,7 +33,7 @@ path count. Separate random draws, path evolution, payoff, and aggregation.
 approximately correct 95% interval coverage against both analytical prices. Test runtime stays
 short; experiments live outside unit tests.
 
-## M3 — Arithmetic Asian and variance reduction
+## M3 — Arithmetic Asian and variance reduction (complete)
 
 **Learn:** arithmetic versus geometric averaging, covariance, antithetic pairs, and control
 variates.

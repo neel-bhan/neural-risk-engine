@@ -30,5 +30,5 @@ int main() {
             << result.confidence_interval_95.lower << ", " << result.confidence_interval_95.upper
             << "]\n"
             << "Paths=" << result.effective_paths << ", seed=" << result.seed << '\n'
-            << "Next milestone: arithmetic-Asian pricing and variance reduction.\n";
+            << "Next milestone: backend-neutral pricing and Monte Carlo Delta.\n";
 }

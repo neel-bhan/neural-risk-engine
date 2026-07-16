@@ -1,81 +1,62 @@
-# Completed M2 work queue — correct scalar Monte Carlo
+# M4 work queue — Delta and pricing interface
 
-M1 analytical reference pricing and the M2 single-thread scalar Monte Carlo reference are complete.
-The next active milestone is **M3: arithmetic Asian and variance reduction** in
-`docs/ROADMAP.md`. The completed M2 sequence is retained below as an implementation record.
+M3 is complete at implementation commit `1364d217a187a1a4d8c030bdaba4de0ff42fc2e6`.
+Arithmetic-Asian calls and puts now have plain, antithetic, and independent-pilot geometric control
+variate estimators; matched-draw measurements are recorded in `docs/M3_VARIANCE_REDUCTION.md`. The
+active milestone is **M4: Delta and pricing interface**.
 
-## Task 1 — Add streaming statistics (complete)
+## Task 1 — Define the backend-neutral pricing request and result
 
-- Accumulate scalar `double` samples with Welford's online mean and squared-deviation update.
-- Report the mean estimate, sample standard error, and the normal-approximation 95% confidence
-  interval specified in `docs/CONVENTIONS.md`.
-- Reject summary requests with fewer than two samples because sample variance is undefined.
-- Test hand-calculated sequences, the two-sample boundary, constant samples, and empty/one-sample
-  behavior.
-- Register the component and its tests in both Make and CMake.
+- Introduce a request that owns a validated contract, market state, backend/estimator selection, and
+  numerical configuration without making domain types depend on Monte Carlo.
+- Define result diagnostics for price and Delta estimates, standard errors, confidence intervals,
+  effective/raw samples, seeds, and fallback or estimator metadata where applicable.
+- Preserve the existing style-specific analytical and Monte Carlo entry points while the router is
+  introduced.
+- Test unsupported backend/estimator combinations and stable metadata propagation.
 
-**Done when:** strict Make and CMake/CTest builds pass without warnings and no samples need to be
-stored.
+**Done when:** callers can request supported analytical or Monte Carlo pricing through one C++
+interface without weakening style validation.
 
-## Task 2 — Define deterministic random draws (complete)
+## Task 2 — Add a scalar reference Delta estimator
 
-- Select and document the standard-library pseudo-random engine, seed type, and normal transform.
-- Keep uniform-engine state and normal draws behind a small interface that does not depend on
-  contracts, payoffs, or statistics.
-- Add deterministic tests appropriate to the chosen toolchain; do not treat a fixed sequence as a
-  portability guarantee across different standard-library implementations.
+- Select and document the reference estimator for each supported payoff, including behavior at
+  payoff kinks.
+- Reuse the same normal draws between price and Delta calculations and avoid new path-loop
+  allocations.
+- Use `double` throughout and retain the exact monitoring schedule for both Asian styles.
+- Cover deterministic zero-volatility cases, supplied draws, call/put signs, and fixed-seed
+  reproducibility.
 
-**Done when:** a caller can reproduce a normal-draw stream from a documented seed and tests detect
-accidental seed or draw-order changes.
+**Done when:** every scalar Monte Carlo contract returns a price and Delta with separately defined
+sampling diagnostics.
 
-## Task 3 — Implement exact scalar GBM evolution (complete)
+## Task 3 — Validate common-random-number bump-and-revalue
 
-- Implement the exact risk-neutral GBM step using `double` and the model in
-  `docs/CONVENTIONS.md`.
-- Keep path evolution independent of random-number generation by accepting supplied normal draws.
-- Cover zero volatility, nonzero dividend yield, negative rates, and deterministic supplied draws.
-- Evolve the exact observation schedule `t_i = iT/m`, excluding the initial spot.
+- Add centered spot bump-and-revalue as an independent validation estimator using common random
+  numbers for up/down paths.
+- Document bump size and a scale-aware rule for avoiding invalid down-spots.
+- Compare the reference Delta estimator with common-random-number finite differences across
+  representative European, geometric-Asian, and arithmetic-Asian cases.
+- Keep stochastic convergence checks outside the short unit-test target.
 
-**Done when:** deterministic path fixtures and the zero-volatility path agree with hand-calculated
-values without allocating inside an observation loop.
+**Done when:** deterministic fixtures catch draw mismatches and the two Monte Carlo Delta methods
+agree within declared statistical tolerance.
 
-## Task 4 — Add European and geometric-Asian payoffs (complete)
+## Task 4 — Close M4 with analytical and convergence checks
 
-- Implement call and put payoffs separately from path evolution and aggregation.
-- Compute the discrete geometric average on the documented observation schedule without storing
-  every path payoff.
-- Test in-, at-, and out-of-the-money values and geometric averages from small supplied paths.
+- Compare European and geometric-Asian Monte Carlo Delta against M1 analytical Delta over many
+  seeds and increasing path counts.
+- Report error, estimated uncertainty, and confidence-interval behavior with reproducible compiler,
+  hardware, seed, path-count, and timing metadata.
+- Add arithmetic-Asian finite-difference comparisons because it has no matching analytical formula.
+- Update README, architecture, conventions, roadmap status, and a versioned M4 report only after the
+  exit gate is supported.
 
-**Done when:** payoff tests are deterministic and would catch call/put sign errors or accidental
-inclusion of the initial spot.
-
-## Task 5 — Compose the scalar Monte Carlo pricer (complete)
-
-- Add a configuration containing a seed and path count, requiring at least two paths.
-- Compose random draws, exact GBM evolution, payoff evaluation, discounting, and streaming
-  statistics without merging their responsibilities.
-- Price European and discrete geometric-Asian calls and puts on one thread.
-- Return the estimate, sample standard error, 95% confidence interval, effective path count, and
-  seed/configuration metadata required by `docs/CONVENTIONS.md`.
-
-**Done when:** fixed-seed integration tests are reproducible and analytical edge cases such as zero
-volatility agree to deterministic numerical tolerance.
-
-## Task 6 — Validate convergence and interval coverage (complete)
-
-- Add a reproducible experiment outside unit tests that compares both pricers with their M1
-  analytical references across many seeds and increasing path counts.
-- Record errors, interval inclusion, and enough configuration metadata to reproduce the run.
-- Check whether error and interval width exhibit the expected `1/sqrt(N)` trend and report measured
-  coverage; do not encode a single lucky seed or a long stochastic experiment as a unit test.
-- Document the command and measured results separately from the expected 95% target.
-- Keep the measured output and interpretation in `docs/M2_CONVERGENCE.md`.
-
-**Done when:** M2's exit gate in `docs/ROADMAP.md` is supported by a short-test suite plus a
-reproducible external convergence report.
+**Done when:** the M4 exit criteria in `docs/ROADMAP.md` pass strict Make and CMake/CTest builds from
+a clean checkout.
 
 ## Scope boundary
 
-M2 remains single-threaded and scalar. Random sampling and path simulation begin only in Tasks 2
-and 3. Antithetic sampling, control variates, arithmetic-Asian pricing, threading, SIMD, ML, ONNX,
-and external dependencies belong to later roadmap milestones.
+M4 remains single-threaded and scalar. Multithreading, SIMD, profiling-driven optimization,
+PyTorch, ONNX, and external dependencies remain in later milestones.
