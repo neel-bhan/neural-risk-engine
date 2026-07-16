@@ -4,9 +4,7 @@ This report records the M4 numerical experiment for the scalar pathwise Delta es
 independent common-random-number (CRN) finite-difference check. It is a validation experiment, not
 a throughput or latency benchmark.
 
-> Source finalization: these measurements were produced from the M4 working tree based on commit
-> `afced188cbdd3a58cfcac090ca276d9d0278ccca`. The orchestrating agent must replace this note with
-> the final versioned implementation commit before M4 is marked complete.
+Source implementation commit: `5c2adcb007d26a2e3935ca79f2072e5c4b653588`.
 
 ## Estimators
 

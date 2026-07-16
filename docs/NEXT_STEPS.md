@@ -1,8 +1,7 @@
 # M5 work queue — Multithreading and performance engineering
 
-M4's implementation, strict builds, and many-seed numerical exit gate have passed locally. Before
-calling M4 complete, replace the source-finalization note in `docs/M4_DELTA_VALIDATION.md` with the
-versioned implementation commit. The next implementation milestone is **M5: multithreading and
+M4's implementation, strict builds, and many-seed numerical exit gate are complete at implementation
+commit `5c2adcb007d26a2e3935ca79f2072e5c4b653588`. The active milestone is **M5: multithreading and
 performance engineering**.
 
 ## Task 1 — Freeze a scalar benchmark protocol

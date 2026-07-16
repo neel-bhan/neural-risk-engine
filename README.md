@@ -8,11 +8,9 @@ against analytical references, and uses a guarded neural surrogate for eligible 
 The neural model is an accelerator: invalid, unsafe, or out-of-domain results fall back to Monte
 Carlo.
 
-> Status: M4 implementation and numerical validation are complete locally, pending recording the
-> final source commit in the M4 report. The single-thread scalar engine returns price and pathwise
-> Delta for European, geometric-Asian, and arithmetic-Asian calls and puts through a validated
-> backend-neutral interface. Threading, ML, ONNX, and general performance claims are not
-> implemented yet.
+> Status: M4 is complete. The single-thread scalar engine returns price and pathwise Delta for
+> European, geometric-Asian, and arithmetic-Asian calls and puts through a validated backend-neutral
+> interface. Threading, ML, ONNX, and general performance claims are not implemented yet.
 
 ## Why this project is ordered this way
 
