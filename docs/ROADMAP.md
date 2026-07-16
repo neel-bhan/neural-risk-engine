@@ -11,7 +11,7 @@ must not be used to claim a result before its prerequisite gates pass.
 
 **Exit gate:** `make check` passes with warnings enabled; no pricing or performance claim is made.
 
-## M1 — Analytical reference pricing
+## M1 — Analytical reference pricing (complete)
 
 **Learn:** discounting, calls versus puts, normal CDF, Black-Scholes, Delta, and put-call parity.
 
@@ -142,4 +142,3 @@ Target template (not a current claim):
 - Embedded batched ONNX Runtime inference in the C++ risk engine with domain, price-bound, and
   monotonicity checks plus Monte Carlo fallback, repricing `[N]` contracts across `[M]` shocks in
   `[A]` ms versus `[B]` ms for optimized Monte Carlo.
-

@@ -25,6 +25,15 @@ limits belong in analytical tests, not ordinary contracts.
 This is a deliberately simple model for numerical engineering. It is not market calibration and
 does not claim to reproduce an options surface.
 
+## Analytical edge cases
+
+Analytical pricing functions require inputs that have already passed the public domain validation.
+They accept any strictly positive maturity, including positive values close to zero, but a contract
+with zero maturity remains invalid. A zero-volatility market is priced from its discounted
+deterministic payoff rather than by dividing by volatility. When that deterministic value is
+exactly at the strike, the reported Delta is half of the payoff's left/right Delta jump; this is
+the convention approached as positive volatility tends to zero.
+
 ## Contracts
 
 Version one supports fixed-strike European, geometric Asian, and arithmetic Asian calls and puts.
@@ -76,4 +85,3 @@ estimate +/- 1.96 * standard_error
 This is a numerical diagnostic, not calibrated uncertainty about model error. Coverage tests should
 use many independent seeds against analytical values; a single interval containing the answer is
 not sufficient validation.
-

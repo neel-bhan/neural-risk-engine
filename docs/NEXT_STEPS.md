@@ -1,9 +1,9 @@
-# Immediate work queue
+# Completed M1 work queue
 
-The active milestone is **M1: analytical reference pricing**. Complete these tasks in order; each is
-small enough for one focused coding session.
+The analytical reference-pricing tasks for **M1** are complete. The next active milestone is
+**M2: correct scalar Monte Carlo** in `docs/ROADMAP.md`.
 
-## Task 1 — Define pricing result and analytical API
+## Task 1 — Define pricing result and analytical API (complete)
 
 - Add `include/nre/analytics.hpp`.
 - Define a small result type containing `price` and `delta`.
@@ -14,7 +14,7 @@ small enough for one focused coding session.
 
 **Done when:** the API compiles and invalid-style behavior has a test.
 
-## Task 2 — Implement European Black-Scholes
+## Task 2 — Implement European Black-Scholes (complete)
 
 - Implement the normal CDF with the C++ standard library.
 - Implement call and put price and spot Delta with continuous dividend yield.
@@ -24,7 +24,7 @@ small enough for one focused coding session.
 **Done when:** independent high-precision fixtures pass, including a nonzero dividend yield and a
 negative-rate case.
 
-## Task 3 — Test invariants, not just examples
+## Task 3 — Test invariants, not just examples (complete)
 
 - Test put-call parity.
 - Test call price bounds and put price bounds.
@@ -34,7 +34,7 @@ negative-rate case.
 
 **Done when:** tests would catch sign mistakes in discounting, dividend yield, and put Delta.
 
-## Task 4 — Derive the geometric-Asian formula on paper first
+## Task 4 — Derive the geometric-Asian formula on paper first (complete)
 
 - Derive the mean and variance of the average log spot for `t_i = iT/m`, excluding `t=0`.
 - Put the derivation and final formula in `docs/GEOMETRIC_ASIAN_DERIVATION.md`.
@@ -43,7 +43,7 @@ negative-rate case.
 
 **Done when:** another reader can reproduce every discrete-monitoring coefficient from the doc.
 
-## Task 5 — Implement and validate geometric Asian analytics
+## Task 5 — Implement and validate geometric Asian analytics (complete)
 
 - Add geometric-Asian call/put price and Delta.
 - Add high-precision fixtures produced independently of the C++ implementation.
@@ -58,4 +58,3 @@ Use one task per session. Before asking an agent to implement it, ask for a two-
 the formula and the tests that will detect common bugs. After implementation, read the relevant test
 names and run `make check` yourself. Keep a short note of what you can now explain without the code;
 that becomes interview preparation.
-

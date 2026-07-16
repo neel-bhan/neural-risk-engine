@@ -36,6 +36,11 @@ int main() {
   expect(!nre::validate(invalid_european).empty(),
          "European option should only observe maturity");
 
+  auto zero_maturity = nre::OptionContract{};
+  zero_maturity.maturity_years = 0.0;
+  expect(!nre::validate(zero_maturity).empty(),
+         "public contracts should reject zero maturity");
+
   auto invalid_market = nre::MarketState{};
   invalid_market.spot = 0.0;
   invalid_market.volatility = std::numeric_limits<double>::quiet_NaN();
@@ -54,4 +59,3 @@ int main() {
   std::cout << "All domain tests passed\n";
   return EXIT_SUCCESS;
 }
-
