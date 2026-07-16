@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <limits>
+#include <optional>
 #include <stdexcept>
 #include <string>
 
@@ -53,6 +54,22 @@ nre::OptionContract contract(nre::OptionStyle style, nre::OptionType type = nre:
   };
 }
 
+nre::PricingRequest pricing_request(
+    const nre::OptionContract& option, const nre::MarketState& market,
+    nre::PricingBackend backend = nre::PricingBackend::analytical,
+    nre::PricingEstimator estimator = nre::PricingEstimator::analytical,
+    std::optional<nre::MonteCarloConfig> monte_carlo_config = std::nullopt,
+    std::optional<nre::ControlVariateConfig> control_variate_config = std::nullopt) {
+  return {
+      .contract = option,
+      .market = market,
+      .backend = backend,
+      .estimator = estimator,
+      .monte_carlo_config = monte_carlo_config,
+      .control_variate_config = control_variate_config,
+  };
+}
+
 void expect_stochastic_equal(const nre::UnifiedPricingResult& unified,
                              const nre::MonteCarloResult& direct, const std::string& message) {
   expect_near(unified.price.estimate, direct.estimate, message + " price");
@@ -78,12 +95,7 @@ void test_analytical_routing() {
   const nre::MarketState market{};
   for (const auto style : {nre::OptionStyle::european, nre::OptionStyle::geometric_asian}) {
     const auto option = contract(style, nre::OptionType::put);
-    const nre::PricingRequest request{
-        .contract = option,
-        .market = market,
-        .backend = nre::PricingBackend::analytical,
-        .estimator = nre::PricingEstimator::analytical,
-    };
+    const auto request = pricing_request(option, market);
     const auto unified = nre::price(request);
     const auto direct = style == nre::OptionStyle::european
                             ? nre::black_scholes_european(option, market)
@@ -107,13 +119,8 @@ void test_monte_carlo_routing_and_metadata() {
   for (const auto style : {nre::OptionStyle::european, nre::OptionStyle::geometric_asian,
                            nre::OptionStyle::arithmetic_asian}) {
     const auto option = contract(style);
-    const nre::PricingRequest request{
-        .contract = option,
-        .market = market,
-        .backend = nre::PricingBackend::monte_carlo,
-        .estimator = nre::PricingEstimator::plain,
-        .monte_carlo_config = config,
-    };
+    const auto request = pricing_request(option, market, nre::PricingBackend::monte_carlo,
+                                         nre::PricingEstimator::plain, config);
     const auto unified = nre::price(request);
     nre::MonteCarloResult direct{};
     if (style == nre::OptionStyle::european) {
@@ -127,13 +134,9 @@ void test_monte_carlo_routing_and_metadata() {
   }
 
   const auto arithmetic = contract(nre::OptionStyle::arithmetic_asian);
-  const nre::PricingRequest antithetic_request{
-      .contract = arithmetic,
-      .market = market,
-      .backend = nre::PricingBackend::monte_carlo,
-      .estimator = nre::PricingEstimator::antithetic,
-      .monte_carlo_config = config,
-  };
+  const auto antithetic_request = pricing_request(arithmetic, market,
+                                                  nre::PricingBackend::monte_carlo,
+                                                  nre::PricingEstimator::antithetic, config);
   const auto antithetic = nre::price(antithetic_request);
   const auto direct_antithetic =
       nre::price_arithmetic_asian_antithetic_monte_carlo(arithmetic, market, config);
@@ -144,13 +147,9 @@ void test_monte_carlo_routing_and_metadata() {
       .pilot_seed = 98766ULL,
       .pilot_path_count = 64,
   };
-  const nre::PricingRequest control_request{
-      .contract = arithmetic,
-      .market = market,
-      .backend = nre::PricingBackend::monte_carlo,
-      .estimator = nre::PricingEstimator::geometric_control_variate,
-      .control_variate_config = control_config,
-  };
+  const auto control_request = pricing_request(
+      arithmetic, market, nre::PricingBackend::monte_carlo,
+      nre::PricingEstimator::geometric_control_variate, std::nullopt, control_config);
   const auto control = nre::price(control_request);
   const auto direct_control =
       nre::price_arithmetic_asian_control_variate_monte_carlo(arithmetic, market, control_config);
@@ -182,111 +181,79 @@ void test_validation_and_unsupported_combinations() {
   auto invalid_contract = contract(nre::OptionStyle::european);
   invalid_contract.strike = -1.0;
   expect_invalid_argument(
-      [&] { static_cast<void>(nre::price({.contract = invalid_contract, .market = market})); },
+      [&] { static_cast<void>(nre::price(pricing_request(invalid_contract, market))); },
       "router validates contracts");
   auto invalid_market = market;
   invalid_market.spot = std::numeric_limits<double>::quiet_NaN();
   expect_invalid_argument(
       [&] {
-        static_cast<void>(nre::price(
-            {.contract = contract(nre::OptionStyle::european), .market = invalid_market}));
+        static_cast<void>(
+            nre::price(pricing_request(contract(nre::OptionStyle::european), invalid_market)));
       },
       "router validates markets");
 
   expect_invalid_argument(
       [&] {
-        static_cast<void>(nre::price({
-            .contract = contract(nre::OptionStyle::arithmetic_asian),
-            .market = market,
-            .backend = nre::PricingBackend::analytical,
-            .estimator = nre::PricingEstimator::analytical,
-        }));
+        static_cast<void>(nre::price(
+            pricing_request(contract(nre::OptionStyle::arithmetic_asian), market)));
       },
       "router rejects analytical arithmetic-Asian requests");
   expect_invalid_argument(
       [&] {
-        static_cast<void>(nre::price({
-            .contract = contract(nre::OptionStyle::european),
-            .market = market,
-            .backend = nre::PricingBackend::analytical,
-            .estimator = nre::PricingEstimator::plain,
-        }));
+        static_cast<void>(nre::price(pricing_request(
+            contract(nre::OptionStyle::european), market, nre::PricingBackend::analytical,
+            nre::PricingEstimator::plain)));
       },
       "analytical backend rejects a Monte Carlo estimator");
   expect_invalid_argument(
       [&] {
-        static_cast<void>(nre::price({
-            .contract = contract(nre::OptionStyle::european),
-            .market = market,
-            .backend = nre::PricingBackend::analytical,
-            .estimator = nre::PricingEstimator::analytical,
-            .monte_carlo_config = config,
-        }));
+        static_cast<void>(nre::price(pricing_request(
+            contract(nre::OptionStyle::european), market, nre::PricingBackend::analytical,
+            nre::PricingEstimator::analytical, config)));
       },
       "analytical backend rejects extraneous Monte Carlo configuration");
   expect_invalid_argument(
       [&] {
-        static_cast<void>(nre::price({
-            .contract = contract(nre::OptionStyle::european),
-            .market = market,
-            .backend = nre::PricingBackend::monte_carlo,
-            .estimator = nre::PricingEstimator::plain,
-        }));
+        static_cast<void>(nre::price(pricing_request(
+            contract(nre::OptionStyle::european), market, nre::PricingBackend::monte_carlo,
+            nre::PricingEstimator::plain)));
       },
       "plain Monte Carlo rejects missing configuration");
   expect_invalid_argument(
       [&] {
-        static_cast<void>(nre::price({
-            .contract = contract(nre::OptionStyle::european),
-            .market = market,
-            .backend = nre::PricingBackend::monte_carlo,
-            .estimator = nre::PricingEstimator::antithetic,
-            .monte_carlo_config = config,
-        }));
+        static_cast<void>(nre::price(pricing_request(
+            contract(nre::OptionStyle::european), market, nre::PricingBackend::monte_carlo,
+            nre::PricingEstimator::antithetic, config)));
       },
       "router rejects unsupported antithetic style");
   expect_invalid_argument(
       [&] {
-        static_cast<void>(nre::price({
-            .contract = contract(nre::OptionStyle::geometric_asian),
-            .market = market,
-            .backend = nre::PricingBackend::monte_carlo,
-            .estimator = nre::PricingEstimator::geometric_control_variate,
-            .control_variate_config = control_config,
-        }));
+        static_cast<void>(nre::price(pricing_request(
+            contract(nre::OptionStyle::geometric_asian), market,
+            nre::PricingBackend::monte_carlo,
+            nre::PricingEstimator::geometric_control_variate, std::nullopt, control_config)));
       },
       "router rejects unsupported control-variate style");
   expect_invalid_argument(
       [&] {
-        static_cast<void>(nre::price({
-            .contract = contract(nre::OptionStyle::arithmetic_asian),
-            .market = market,
-            .backend = nre::PricingBackend::monte_carlo,
-            .estimator = nre::PricingEstimator::geometric_control_variate,
-            .monte_carlo_config = config,
-            .control_variate_config = control_config,
-        }));
+        static_cast<void>(nre::price(pricing_request(
+            contract(nre::OptionStyle::arithmetic_asian), market,
+            nre::PricingBackend::monte_carlo,
+            nre::PricingEstimator::geometric_control_variate, config, control_config)));
       },
       "router rejects incompatible duplicate configuration");
   expect_invalid_argument(
       [&] {
-        static_cast<void>(nre::price({
-            .contract = contract(nre::OptionStyle::european),
-            .market = market,
-            .backend = static_cast<nre::PricingBackend>(999),
-            .estimator = nre::PricingEstimator::analytical,
-        }));
+        static_cast<void>(nre::price(pricing_request(
+            contract(nre::OptionStyle::european), market,
+            static_cast<nre::PricingBackend>(999), nre::PricingEstimator::analytical)));
       },
       "router rejects unknown backends");
   expect_invalid_argument(
       [&] {
-        static_cast<void>(nre::price({
-            .contract = contract(nre::OptionStyle::european),
-            .market = market,
-            .backend = nre::PricingBackend::monte_carlo,
-            .estimator = static_cast<nre::PricingEstimator>(999),
-            .monte_carlo_config = config,
-        }));
+        static_cast<void>(nre::price(pricing_request(
+            contract(nre::OptionStyle::european), market, nre::PricingBackend::monte_carlo,
+            static_cast<nre::PricingEstimator>(999), config)));
       },
       "router rejects unknown estimators");
 }
