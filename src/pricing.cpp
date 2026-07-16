@@ -125,6 +125,9 @@ UnifiedPricingResult price(const PricingRequest& request) {
     }
     case PricingBackend::monte_carlo:
       break;
+    case PricingBackend::neural:
+      throw std::invalid_argument(
+          "direct neural pricing is not allowed; use the guarded batch router");
     default:
       throw std::invalid_argument("unsupported pricing backend");
   }
@@ -176,6 +179,8 @@ UnifiedPricingResult price(const PricingRequest& request) {
       metadata.delta_control_applied = result.delta_control_applied;
       return unified_monte_carlo_result(result.monte_carlo, request.estimator, std::move(metadata));
     }
+    case PricingEstimator::neural:
+      throw std::invalid_argument("Monte Carlo backend cannot use the neural estimator");
     default:
       throw std::invalid_argument("unsupported pricing estimator");
   }
@@ -187,6 +192,8 @@ std::string to_string(PricingBackend backend) {
       return "analytical";
     case PricingBackend::monte_carlo:
       return "Monte Carlo";
+    case PricingBackend::neural:
+      return "neural";
   }
   return "unknown";
 }
@@ -201,6 +208,8 @@ std::string to_string(PricingEstimator estimator) {
       return "antithetic";
     case PricingEstimator::geometric_control_variate:
       return "geometric control variate";
+    case PricingEstimator::neural:
+      return "neural";
   }
   return "unknown";
 }

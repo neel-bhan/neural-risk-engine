@@ -118,7 +118,7 @@ The frozen protocol, exact-reproduction evidence, held-out comparison, failures,
 timing are recorded in [`M8_NEURAL_MODEL.md`](M8_NEURAL_MODEL.md). Source commit finalization remains
 a mechanical metadata update by the committing agent.
 
-## M9 — ONNX C++ acceleration with fallback
+## M9 — ONNX C++ acceleration with fallback (complete)
 
 **Learn:** model export, preprocessing parity, batched inference, deployment domains, and runtime
 policy.
@@ -128,6 +128,10 @@ monotonicity checks, reasoned counters, and Monte Carlo fallback.
 
 **Exit gate:** Python and C++ outputs match within declared tolerance; all rejection reasons are
 tested; accepted-set error and total fallback rate are reported together.
+
+The frozen export contract, cross-language parity, guarded routing evidence, runtime setup, and
+measured limitations are recorded in [`M9_ONNX_DEPLOYMENT.md`](M9_ONNX_DEPLOYMENT.md). Source
+commit finalization remains a mechanical metadata update by the committing agent.
 
 ## M10 — Portfolio risk benchmark and final report
 

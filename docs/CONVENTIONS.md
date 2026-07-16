@@ -166,3 +166,23 @@ The price loss normalizes squared `price/strike` error by the training-only stan
 deviation. Derivative supervision gives the two normalized terms equal weight. Model and
 checkpoint selection use validation median normalized price error under the unchanged one-unit
 M7 price floor. Held-out test rows do not influence selection.
+
+## M9 deployed neural price, Delta, and guardrails
+
+The ONNX graph has one float64 output, `price/strike`, and no Delta head. C++ physical price is
+`strike * output`. Deployment Delta uses centered evaluations of the identical graph at
+`spot +/- max(1e-4 * spot, 1e-6)` and was compared with PyTorch autograd before routing evidence
+was measured.
+
+Neural eligibility uses the frozen M6 domain. Candidate prices must be finite and lie between the
+discounted Jensen lower bound and conservative expected-underlying/discounted-strike upper bound,
+with tolerance `1e-8`. Spot probes use a relative step of `1e-3`; volatility probes use an
+absolute step of `1e-3`; both allow `1e-8` numerical tolerance. These finite sampled checks are
+engineering controls only. They are not formal no-arbitrage proofs, calibrated confidence, or a
+general out-of-distribution detector.
+
+Every valid request supplies its original Monte Carlo estimator/configuration before neural
+inference. A domain, non-finite output, price-bound, spot-monotonicity, volatility-monotonicity, or
+artifact/runtime rejection invokes that unchanged fallback and increments exactly one counter.
+Non-finite or otherwise invalid financial inputs fail request validation because Monte Carlo cannot
+meaningfully price them.

@@ -119,6 +119,20 @@ capacity/regularization search and validation-only checkpoint policy. Versioned 
 JSON feature order, preprocessing, architecture, checksums, and output semantics form the M9 export
 input; no ONNX or C++ neural dependency is introduced in M8.
 
+M9 freezes the selected derivative-supervised state as a dynamic-batch float64 ONNX graph with one
+`price/strike` output. Exact feature order, train-only means/scales, deployment-domain limits,
+tensor names, bump policy, tolerances, and checksums live in one versioned JSON artifact consumed
+by Python and C++. Because ONNX Runtime does not expose training autograd to this C++ inference
+path, deployed Delta is the centered finite difference of that same scalar price graph using
+`max(1e-4 * spot, 1e-6)`; it is not a learned second output.
+
+The optional `OnnxPricingBackend` owns one reusable session and buffers batched base/up/down graph
+rows. `price_guarded_neural_batch` remains in the dependency-free core and accepts only requests
+that already declare their exact trusted Monte Carlo fallback. It evaluates eligible base/spot/
+volatility probes in batches, preserves request order, returns neural results only after all checks
+pass, and otherwise calls the ordinary `price` route while recording one reason. Invalid financial
+inputs are rejected before inference because no valid Monte Carlo price exists for them.
+
 Dependencies should point downward from orchestration to small numerical components. In particular,
 `domain` and `analytics` must not depend on Monte Carlo or ML.
 
@@ -149,6 +163,7 @@ and overall fallback rate to prevent selective reporting.
 
 ## Dependency policy
 
-The foundation and trusted scalar engine build with the C++ standard library. Add dependencies only
-when a milestone needs them and document installation and version constraints then. Candidate later
-dependencies include a test/benchmark framework and ONNX Runtime, but none is required yet.
+The trusted engine and default tests remain C++-standard-library-only. M9 optionally links ONNX
+Runtime 1.27.x when `NRE_ENABLE_ONNX=ON` or an ONNX Make target is selected. Python export uses
+ONNX 1.22.0 and ONNX Runtime 1.27.0; the measured Homebrew C++ runtime is 1.27.1. No Python
+interpreter or generated training dataset is embedded in the C++ process.

@@ -10,9 +10,9 @@
 
 namespace nre {
 
-enum class PricingBackend { analytical, monte_carlo };
+enum class PricingBackend { analytical, monte_carlo, neural };
 
-enum class PricingEstimator { analytical, plain, antithetic, geometric_control_variate };
+enum class PricingEstimator { analytical, plain, antithetic, geometric_control_variate, neural };
 
 struct PricingRequest {
   OptionContract contract;

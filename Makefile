@@ -6,7 +6,7 @@ BUILD_DIR := build/make
 .PHONY: all run test check convergence variance delta-validation performance dataset-small \
 	dataset-large dataset-m7 dataset-verify dataset-reproduce python-bootstrap python-test \
 	baseline-train baseline-evaluate baseline-reproduce neural-train neural-evaluate \
-	neural-reproduce clean
+	neural-reproduce onnx-export onnx-evaluate onnx-check onnx-evaluate-cpp clean
 
 PYTHON := .venv/bin/python
 M7_DATASET := data/generated/m7-baseline
@@ -16,6 +16,13 @@ M7_RESULTS := benchmarks/m7-polynomial-ridge-v1.json
 M8_EXPERIMENT := python/config/m8-neural-v1.json
 M8_ARTIFACT_DIR := models/m8
 M8_RESULTS := benchmarks/m8-neural-v1.json
+M9_METADATA := models/m9/scalar-price-v1.json
+M9_MODEL := models/m9/scalar-price-v1.onnx
+M9_RESULTS := benchmarks/m9-onnx-python-v1.json
+ONNXRUNTIME_PREFIX ?= $(shell brew --prefix onnxruntime 2>/dev/null)
+ONNX_CPPFLAGS := -isystem $(ONNXRUNTIME_PREFIX)/include/onnxruntime
+ONNX_LDFLAGS := -L$(ONNXRUNTIME_PREFIX)/lib -lonnxruntime \
+	-Wl,-rpath,$(ONNXRUNTIME_PREFIX)/lib
 
 all: $(BUILD_DIR)/nre_cli
 
@@ -41,6 +48,10 @@ $(BUILD_DIR)/monte_carlo.o: src/monte_carlo.cpp include/nre/monte_carlo.hpp \
 
 $(BUILD_DIR)/pricing.o: src/pricing.cpp include/nre/pricing.hpp include/nre/analytics.hpp \
 		include/nre/domain.hpp include/nre/monte_carlo.hpp include/nre/statistics.hpp | $(BUILD_DIR)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+
+$(BUILD_DIR)/neural_router.o: src/neural_router.cpp include/nre/neural_router.hpp \
+		include/nre/pricing.hpp include/nre/domain.hpp | $(BUILD_DIR)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
 $(BUILD_DIR)/dataset.o: src/dataset.cpp include/nre/dataset.hpp include/nre/domain.hpp \
@@ -78,6 +89,29 @@ $(BUILD_DIR)/threading_tests: tests/threading_tests.cpp $(BUILD_DIR)/domain.o \
 		$(BUILD_DIR)/monte_carlo.o $(BUILD_DIR)/pricing.o | $(BUILD_DIR)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@
 
+$(BUILD_DIR)/neural_router_tests: tests/neural_router_tests.cpp $(BUILD_DIR)/domain.o \
+		$(BUILD_DIR)/analytics.o $(BUILD_DIR)/statistics.o $(BUILD_DIR)/random.o \
+		$(BUILD_DIR)/monte_carlo.o $(BUILD_DIR)/pricing.o $(BUILD_DIR)/neural_router.o | $(BUILD_DIR)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@
+
+$(BUILD_DIR)/onnx_backend.o: src/onnx_backend.cpp include/nre/onnx_backend.hpp \
+		include/nre/neural_router.hpp | $(BUILD_DIR)
+	@test -n "$(ONNXRUNTIME_PREFIX)" || \
+		(echo "ONNX Runtime not found; install with: brew install onnxruntime" && false)
+	$(CXX) $(CPPFLAGS) $(ONNX_CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+
+$(BUILD_DIR)/onnx_backend_tests: tests/onnx_backend_tests.cpp $(BUILD_DIR)/domain.o \
+		$(BUILD_DIR)/onnx_backend.o | $(BUILD_DIR)
+	$(CXX) $(CPPFLAGS) $(ONNX_CPPFLAGS) $(CXXFLAGS) -DNRE_SOURCE_DIR='"$(CURDIR)"' \
+		$^ $(ONNX_LDFLAGS) -o $@
+
+$(BUILD_DIR)/m9_guarded_evaluation: benchmarks/m9_guarded_evaluation.cpp $(BUILD_DIR)/domain.o \
+		$(BUILD_DIR)/analytics.o $(BUILD_DIR)/statistics.o $(BUILD_DIR)/random.o \
+		$(BUILD_DIR)/monte_carlo.o $(BUILD_DIR)/pricing.o $(BUILD_DIR)/neural_router.o \
+		$(BUILD_DIR)/onnx_backend.o | $(BUILD_DIR)
+	$(CXX) $(CPPFLAGS) $(ONNX_CPPFLAGS) $(CXXFLAGS) \
+		-DNRE_BUILD_FLAGS='"$(CXXFLAGS)"' $^ $(ONNX_LDFLAGS) -o $@
+
 $(BUILD_DIR)/dataset_tests: tests/dataset_tests.cpp $(BUILD_DIR)/domain.o \
 		$(BUILD_DIR)/analytics.o $(BUILD_DIR)/statistics.o $(BUILD_DIR)/random.o \
 		$(BUILD_DIR)/monte_carlo.o $(BUILD_DIR)/pricing.o $(BUILD_DIR)/dataset.o | $(BUILD_DIR)
@@ -113,7 +147,7 @@ run: $(BUILD_DIR)/nre_cli
 
 test: $(BUILD_DIR)/nre_tests $(BUILD_DIR)/analytics_tests $(BUILD_DIR)/statistics_tests \
 		$(BUILD_DIR)/random_tests $(BUILD_DIR)/monte_carlo_tests $(BUILD_DIR)/pricing_tests \
-		$(BUILD_DIR)/threading_tests $(BUILD_DIR)/dataset_tests
+		$(BUILD_DIR)/threading_tests $(BUILD_DIR)/dataset_tests $(BUILD_DIR)/neural_router_tests
 	./$(BUILD_DIR)/nre_tests
 	./$(BUILD_DIR)/analytics_tests
 	./$(BUILD_DIR)/statistics_tests
@@ -122,6 +156,7 @@ test: $(BUILD_DIR)/nre_tests $(BUILD_DIR)/analytics_tests $(BUILD_DIR)/statistic
 	./$(BUILD_DIR)/pricing_tests
 	./$(BUILD_DIR)/threading_tests
 	./$(BUILD_DIR)/dataset_tests
+	./$(BUILD_DIR)/neural_router_tests
 
 convergence: $(BUILD_DIR)/m2_convergence
 	./$(BUILD_DIR)/m2_convergence
@@ -156,12 +191,12 @@ dataset-reproduce: $(BUILD_DIR)/nre_dataset
 	cmp data/generated/m6-small/labels.csv data/generated/m6-small-reproduction/labels.csv
 	cmp data/generated/m6-small/manifest.json data/generated/m6-small-reproduction/manifest.json
 
-.venv/.m8-ready: python/requirements-m8.txt
+.venv/.m9-ready: python/requirements-m9.txt
 	python3 -m venv .venv
-	$(PYTHON) -m pip install --disable-pip-version-check -r python/requirements-m8.txt
+	$(PYTHON) -m pip install --disable-pip-version-check -r python/requirements-m9.txt
 	touch $@
 
-python-bootstrap: .venv/.m8-ready
+python-bootstrap: .venv/.m9-ready
 
 python-test: python-bootstrap
 	PYTHONPATH=python $(PYTHON) -m unittest discover -s python/tests -v
@@ -199,6 +234,24 @@ neural-reproduce: python-bootstrap
 		--output-dir models/generated/m8-reproduction
 	PYTHONPATH=python $(PYTHON) -m nre_neural.cli compare-reproduction \
 		--reference-dir $(M8_ARTIFACT_DIR) --reproduction-dir models/generated/m8-reproduction
+
+onnx-export: python-bootstrap
+	PYTHONPATH=python $(PYTHON) -m nre_onnx.cli export \
+		--neural $(M8_ARTIFACT_DIR)/derivative-supervised-v1.json \
+		--model $(M9_MODEL) --metadata $(M9_METADATA)
+
+onnx-evaluate: python-bootstrap
+	PYTHONPATH=python $(PYTHON) -m nre_onnx.cli evaluate --metadata $(M9_METADATA) \
+		--neural $(M8_ARTIFACT_DIR)/derivative-supervised-v1.json \
+		--dataset $(M7_DATASET) --config $(M7_CONFIG) --output $(M9_RESULTS)
+
+onnx-check: $(BUILD_DIR)/onnx_backend_tests
+	./$(BUILD_DIR)/onnx_backend_tests
+
+onnx-evaluate-cpp: $(BUILD_DIR)/m9_guarded_evaluation
+	./$(BUILD_DIR)/m9_guarded_evaluation --dataset $(M7_DATASET)/labels.csv \
+		--metadata $(M9_METADATA) --model $(M9_MODEL) \
+		--output benchmarks/m9-onnx-cpp-guarded-v1.json
 
 check: test python-test
 

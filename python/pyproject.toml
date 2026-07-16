@@ -4,11 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nre-python"
-version = "0.2.0"
+version = "0.3.0"
 description = "Offline surrogate training and evaluation for the neural risk engine"
 requires-python = ">=3.11,<3.15"
-dependencies = ["numpy==2.3.5", "torch==2.13.0"]
+dependencies = ["numpy==2.3.5", "torch==2.13.0", "onnx==1.22.0", "onnxruntime==1.27.0"]
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["nre_baseline*", "nre_neural*"]
+include = ["nre_baseline*", "nre_neural*", "nre_onnx*"]

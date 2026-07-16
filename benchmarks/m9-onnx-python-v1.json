@@ -1,0 +1,128 @@
+{
+  "coverage": {
+    "boundary_high_spot_count": 6,
+    "boundary_low_spot_count": 6,
+    "near_zero_reference_price_count": 38,
+    "spot_maximum": 140.0,
+    "spot_minimum": 60.0,
+    "styles": [
+      "arithmetic_asian",
+      "european",
+      "geometric_asian"
+    ],
+    "types": [
+      "call",
+      "put"
+    ]
+  },
+  "environment": {
+    "numpy": "2.3.5",
+    "onnx": "1.22.0",
+    "onnxruntime": "1.27.0",
+    "platform": "macOS-26.5.1-arm64-arm-64bit-Mach-O",
+    "provider": "CPUExecutionProvider",
+    "python": "3.14.6",
+    "pytorch": "2.13.0"
+  },
+  "evaluation_policy": "frozen M8 held-out rows and fixed boundary probes; tolerances declared in artifact metadata before evaluation",
+  "heldout_onnx_metrics": {
+    "absolute_price_error": {
+      "maximum": 2.9707372988933543,
+      "median": 0.46065802828524016,
+      "p95": 1.7994769299497038,
+      "p99": 2.7630206154575827
+    },
+    "count": 180,
+    "delta_rmse": 0.04950593368459736,
+    "near_zero_reference_count": 38,
+    "normalized_price_error": {
+      "maximum": 2.0465646469271292,
+      "median": 0.048506268714640394,
+      "p95": 1.1318897094560119,
+      "p99": 1.7388260018193387
+    },
+    "price_floor": 1.0
+  },
+  "limitations": [
+    "Centered-bump Delta is derivative-consistent with the scalar price graph but is not runtime autograd.",
+    "Held-out metrics inherit documented Monte Carlo label noise.",
+    "In-domain parity and boundary probes do not establish out-of-distribution accuracy or formal no-arbitrage guarantees."
+  ],
+  "parity": {
+    "batch_checks": [
+      {
+        "batch_size": 1,
+        "physical_price": {
+          "maximum_absolute": 1.1879386363489175e-14,
+          "maximum_relative": 1.2728272287490433e-14
+        },
+        "within_tolerance": true
+      },
+      {
+        "batch_size": 2,
+        "physical_price": {
+          "maximum_absolute": 3.019806626980426e-14,
+          "maximum_relative": 6.304658235859667e-15
+        },
+        "within_tolerance": true
+      },
+      {
+        "batch_size": 7,
+        "physical_price": {
+          "maximum_absolute": 2.220446049250313e-14,
+          "maximum_relative": 8.513353470514858e-15
+        },
+        "within_tolerance": true
+      },
+      {
+        "batch_size": 32,
+        "physical_price": {
+          "maximum_absolute": 3.019806626980426e-14,
+          "maximum_relative": 4.214712288830825e-14
+        },
+        "within_tolerance": true
+      },
+      {
+        "batch_size": 192,
+        "physical_price": {
+          "maximum_absolute": 5.240252676230739e-14,
+          "maximum_relative": 6.702512119518767e-13
+        },
+        "within_tolerance": true
+      }
+    ],
+    "checks": {
+      "deployment_delta_vs_pytorch_autograd": true,
+      "dynamic_batch_sizes": true,
+      "normalized_price": true,
+      "physical_price": true
+    },
+    "deployment_delta_vs_pytorch_autograd": {
+      "maximum_absolute": 1.7488045345182002e-08,
+      "maximum_relative": 8.663463980672303e-06
+    },
+    "normalized_price": {
+      "maximum_absolute": 4.163336342344337e-16,
+      "maximum_relative": 6.703216372376393e-13
+    },
+    "physical_price": {
+      "maximum_absolute": 5.240252676230739e-14,
+      "maximum_relative": 6.702512119518767e-13
+    }
+  },
+  "result_version": "nre.onnx.python_parity.v1",
+  "row_counts": {
+    "boundary_probes": 12,
+    "heldout": 180,
+    "total_parity": 192
+  },
+  "source_implementation_commit": "PENDING",
+  "tolerances": {
+    "delta_autograd_absolute": 1e-07,
+    "delta_autograd_relative": 1e-06,
+    "normalized_price_absolute": 1e-10,
+    "normalized_price_relative": 1e-10,
+    "physical_price_absolute": 1e-08,
+    "physical_price_relative": 1e-10
+  }
+}

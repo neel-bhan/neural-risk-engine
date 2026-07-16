@@ -33,6 +33,12 @@ benchmark program. It records the fixed normalized/absolute error metrics, Delta
 domain-boundary slices, and warmed Python batch timings. Recreate it with `make baseline-evaluate`
 only after regenerating the checksum-bound M7 dataset and deterministic model artifact.
 
+M9 adds `m9-onnx-python-v1.json` for PyTorch/ONNX parity and unguarded frozen held-out metrics, plus
+`m9-onnx-cpp-guarded-v1.json` for accepted-neural and full-routed metrics, fallback reasons, and
+descriptive C++ batch timing. Recreate them with `make onnx-evaluate` and release-flags
+`make onnx-evaluate-cpp` after `make dataset-m7`. The C++ timing excludes guardrail probes and
+fallback, and is not a matched-error speedup or portfolio benchmark.
+
 A benchmark report must include commit, compiler and flags, build type, CPU/hardware, thread count,
 seed policy, path/contract/scenario counts, warm-up, repetitions, timing method, and definitions of
 reported metrics.

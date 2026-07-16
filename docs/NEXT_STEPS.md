@@ -1,80 +1,67 @@
-# M9 work queue — ONNX C++ acceleration with guarded fallback
+# M10 work queue — portfolio risk benchmark and final evidence
 
-M8 is complete with pinned deterministic PyTorch training, one scalar price output, autograd spot
-Delta, fair price-only/derivative-supervised ablations, exact checkpoint reproduction, and frozen
-held-out/slice/timing evidence. M9 deploys the selected derivative-supervised state without changing
-the trusted Monte Carlo backend.
+M9 is complete with a checksum-bound ONNX scalar-price graph, optional C++ ONNX Runtime backend,
+cross-language price/Delta parity, engineering guardrails, reasoned Monte Carlo fallback, and
+accepted/full-set held-out evidence. M10 measures the actual many-contract market-shock workload.
 
-## Task 1 — Freeze export and runtime contracts
+## Prerequisite — CI stabilization gate
 
-- Pin compatible ONNX, ONNX Runtime Python, and C++ runtime versions; document supported platforms
-  and preserve the dependency-free C++ reference build when neural support is disabled.
-- Define a versioned batched tensor contract from raw domain inputs through the exact M8 feature
-  order, means/scales, `price/strike` output, and physical-price rescaling. Do not copy constants
-  independently from the M8 metadata.
-- Export only the frozen derivative-supervised checkpoint. Record source model/state/config/data
-  checksums, opset, exporter/runtime versions, tensor names, dtypes, and dynamic batch axes.
-- Choose and document a derivative-consistent deployment Delta policy. If C++ uses centered spot
-  bumps of the same scalar ONNX price because ONNX Runtime does not provide autograd, use a
-  predeclared scale-aware bump and validate it against M8 PyTorch autograd; never add a learned
-  Delta head.
+- Run the complete default and optional builds with Apple Clang and real GNU GCC warnings-as-errors.
+- Keep dependency-free `make check`, CMake/CTest, Python tests, ONNX parity, and artifact checksum
+  regeneration green before adding portfolio code.
+- Fix portability issues without weakening strict warning flags or hiding third-party diagnostics.
 
-## Task 2 — Prove Python/export parity
+## Task 1 — Freeze the portfolio and scenario protocol
 
-- Add deterministic tests comparing reloaded PyTorch and ONNX outputs over training-domain points,
-  boundary points, all style/type combinations, and multiple batch sizes.
-- Compare deployed Delta policy against PyTorch autograd with explicit absolute/relative tolerances,
-  including near-zero and high/low spot cases.
-- Reject metadata/checksum/schema/feature-order mismatches and non-finite exporter outputs.
-- Store a compact machine-readable parity report; do not tune export tolerances on the final test
-  split.
+- Version a deterministic portfolio spanning all supported styles/types, strikes, maturities,
+  observation counts, and declared in/out-of-domain cases.
+- Version spot and volatility shock grids, request ordering, fallback Monte Carlo budgets/seeds,
+  repetitions, warm-up, and timing scope before measuring.
+- Define the matched-error comparison rule using held-out/portfolio reference error and confidence
+  intervals; do not silently change the numerical problem between backends.
 
-## Task 3 — Add an optional C++ ONNX backend
+## Task 2 — Add portfolio repricing orchestration
 
-- Add a build option that finds/links pinned ONNX Runtime only when enabled; ordinary `make check`
-  and the standard-library Monte Carlo path must remain usable without it.
-- Implement a reusable batched C++ session with preallocated/reused input and output buffers,
-  versioned metadata loading, exact Python preprocessing parity, physical price, and the frozen
-  Delta policy.
-- Integrate it behind the backend-neutral pricing boundary without embedding Python or allowing
-  direct neural calls to bypass request validation.
-- Add cross-language golden tests for raw inputs, scaled features, normalized output, physical
-  price, Delta, batch ordering, and artifact-version failures.
+- Build contiguous batched requests across contracts and shocks while preserving contract/scenario
+  identity and output ordering.
+- Run optimized Monte Carlo and guarded neural routing through the existing public boundaries.
+- Aggregate price, Delta, neural acceptance, total fallback, and reason counters by portfolio,
+  style/type, and scenario slice.
 
-## Task 4 — Implement guardrails and fallback
+## Task 3 — Benchmark and profile
 
-- Enforce the declared M6/M8 deployment domain before inference: finite inputs, spot/strike,
-  maturity, volatility, rates/yields, observation counts, style, and type.
-- Check finite outputs and contract-specific price lower/upper bounds with one predeclared numerical
-  tolerance. Add batched spot and volatility monotonicity probes where applicable.
-- Give every rejection one explicit reason counter (domain, non-finite, price bound, spot
-  monotonicity, volatility monotonicity, artifact/runtime failure) and route the original request to
-  the trusted Monte Carlo estimator without silently changing its configuration.
-- Test every rejection reason, accepted routing, fallback result/diagnostics, counter totals, and
-  mixed accepted/rejected batch ordering. These checks are engineering guardrails, not formal
-  no-arbitrage or OOD guarantees.
+- Measure warm release builds with steady-clock median and empirical p99 latency, contracts/scenarios
+  per second, and total workload size.
+- Report neural versus Monte Carlo only at an explicitly matched measured error tolerance. Include
+  fallback work in guarded-neural end-to-end timing.
+- Profile the dominant paths before any final optimization; retain before/after evidence and exact
+  compiler, flags, hardware, threads, seeds, paths, warm-ups, and repetitions.
 
-## Task 5 — Evaluate the guarded backend
+## Task 4 — Validate numerical and routing evidence
 
-- Run the exact frozen M8 held-out rows plus a separately declared boundary/probe set through the
-  C++ router. Report overall acceptance, fallback rate by reason, accepted-set errors, and full
-  routed errors together so selective acceptance cannot hide failures.
-- Record Python-to-ONNX and Python-to-C++ parity, price/Delta metrics, batch sizes, warm-up,
-  repetitions, compiler flags, hardware, runtime versions, artifact checksums, and source commit.
-- Report C++ ONNX batch timing descriptively. Do not claim matched-error neural speedup or portfolio
-  latency until the M10 scenario benchmark.
-- Update architecture, conventions, build instructions, artifact documentation, and the M9 report
-  only from measured evidence.
+- Report median/p99 normalized price error, Delta RMSE, confidence-interval context, neural
+  acceptance/fallback rates, and fallback distribution for the full portfolio/scenario grid.
+- Include near-zero prices, domain boundaries, out-of-domain requests, and worst examples. Keep
+  accepted-neural metrics beside full routed metrics.
+- Test deterministic scenario generation, mixed-batch ordering, reason totals, fallback equality,
+  and machine-readable report schema.
+
+## Task 5 — Final project polish
+
+- Produce one concise final report linking every measured claim to a reproducible command and
+  versioned result.
+- Update README architecture/setup examples and fill resume placeholders only with measurements
+  directly supported by tracked evidence.
+- Run the full Apple Clang/GNU GCC, default/optional CMake, Python, export/parity, and benchmark
+  verification matrix from a clean checkout.
 
 ## Exit gate
 
-M9 is complete only when Python and optional C++ outputs match within declared tolerances; the
-default C++ reference build remains dependency-free; all guardrail rejection reasons and Monte
-Carlo fallback paths are tested; and accepted-set error is reported alongside total/reasoned
-fallback rates.
+M10 is complete only when the versioned portfolio benchmark reports end-to-end guarded-neural and
+optimized-Monte-Carlo results at a stated matched error tolerance, includes fallback cost and reason
+rates, passes the full strict verification matrix, and supports every final README/resume number.
 
 ## Scope boundary
 
-M9 does not tune the M8 model on held-out data, add a separate Delta head, claim formal
-no-arbitrage/OOD reliability, or produce the final many-contract market-shock benchmark. Portfolio
-repricing and matched-error neural-versus-Monte-Carlo speedup remain M10.
+Do not claim production low latency, formal no-arbitrage, calibrated confidence, or general OOD
+accuracy. Do not add new products, stochastic models, calibration, or trading-system features.

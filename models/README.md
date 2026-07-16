@@ -13,3 +13,9 @@ The JSON files record dataset/config checksums, training-only preprocessing, fea
 architecture, selection candidates, environment, and canonical tensor SHA-256. The `.pt` files are
 state dictionaries loaded with `weights_only=True`; they are not ONNX models. Generated
 reproduction artifacts belong under ignored `models/generated/`.
+
+`m9/scalar-price-v1.onnx` is the frozen derivative-supervised scalar-price graph.
+`m9/scalar-price-v1.json` is its runtime contract: source checksums, exact preprocessing, tensor
+names, feature order, domain, Delta bump, guardrail tolerances, and ONNX checksum. The graph has no
+learned Delta output. Do not replace either file independently; loaders reject checksum or schema
+mismatch.

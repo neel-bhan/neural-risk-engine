@@ -1,0 +1,143 @@
+{
+  "artifact_version": "nre.onnx.scalar_price.v1",
+  "delta_policy": {
+    "absolute_floor": 1e-06,
+    "name": "centered_spot_bump",
+    "relative_bump": 0.0001
+  },
+  "deployment_domain": {
+    "asian_observations": [
+      2,
+      52
+    ],
+    "dividend_yield": [
+      -0.01,
+      0.08
+    ],
+    "european_observations": 1,
+    "maturity_years": [
+      0.25,
+      2.0
+    ],
+    "risk_free_rate": [
+      -0.02,
+      0.1
+    ],
+    "spot": [
+      60.0,
+      140.0
+    ],
+    "strike": [
+      60.0,
+      140.0
+    ],
+    "volatility": [
+      0.05,
+      0.6
+    ]
+  },
+  "dynamic_batch": true,
+  "environment": {
+    "exporter": "torch.onnx legacy TorchScript exporter with dynamo=false",
+    "numpy": "2.3.5",
+    "onnx": "1.22.0",
+    "onnxruntime": "1.27.0",
+    "platform": "macOS-26.5.1-arm64-arm-64bit-Mach-O",
+    "python": "3.14.6",
+    "pytorch": "2.13.0"
+  },
+  "feature_names": [
+    "log_spot_over_strike",
+    "maturity_years",
+    "volatility",
+    "risk_free_rate",
+    "dividend_yield",
+    "log_observations",
+    "style_geometric_asian",
+    "style_arithmetic_asian",
+    "type_put"
+  ],
+  "guardrails": {
+    "bound_tolerance": 1e-08,
+    "monotonicity_tolerance": 1e-08,
+    "spot_probe_relative": 0.001,
+    "volatility_probe_absolute": 0.001
+  },
+  "input_dtype": "float64",
+  "input_name": "scaled_features",
+  "limitations": [
+    "The ONNX graph exports only scalar normalized price; it has no Delta head.",
+    "Deployment Delta is a centered finite difference of the same price graph.",
+    "The deployment domain is an engineering guardrail, not an accuracy guarantee."
+  ],
+  "model_file": "scalar-price-v1.onnx",
+  "model_fnv1a64": "1f60d27245e9e262",
+  "opset": 18,
+  "output_name": "normalized_price",
+  "output_representation": "price_divided_by_strike",
+  "parity_tolerances": {
+    "delta_autograd_absolute": 1e-07,
+    "delta_autograd_relative": 1e-06,
+    "normalized_price_absolute": 1e-10,
+    "normalized_price_relative": 1e-10,
+    "physical_price_absolute": 1e-08,
+    "physical_price_relative": 1e-10
+  },
+  "physical_price": "strike * normalized_price",
+  "preprocessing": {
+    "base_feature_names": [
+      "log_spot_over_strike",
+      "maturity_years",
+      "volatility",
+      "risk_free_rate",
+      "dividend_yield",
+      "log_observations",
+      "style_geometric_asian",
+      "style_arithmetic_asian",
+      "type_put"
+    ],
+    "delta_scale": 0.5930767076180459,
+    "fit_split": "train",
+    "means": [
+      0.0008263618013432813,
+      1.0884000000000003,
+      0.3214264889629319,
+      0.03931222496511755,
+      0.034372713791398904,
+      2.029990152487808,
+      0.3333333333333333,
+      0.3333333333333333,
+      0.5
+    ],
+    "normalized_price_scale": 0.2096201574173124,
+    "scales": [
+      0.3469082328300068,
+      0.5136795109793647,
+      0.1588938926206778,
+      0.03439637376594137,
+      0.02572623399601566,
+      1.5757423100560761,
+      0.47140452079103323,
+      0.47140452079103445,
+      0.5
+    ],
+    "spot_chain_rule": "z0=(log(spot/strike)-mean0)/scale0; price=strike*network(z); Delta=dprice/dspot via autograd",
+    "version": "nre.preprocessing.neural.v1"
+  },
+  "source_implementation_commit": "PENDING",
+  "source_neural_artifact": {
+    "artifact_version": "nre.neural.artifact.v1",
+    "canonical_tensor_sha256": "3fce199452fb0b1cfc82a915819863e7709146216335245faff52f143e2f089c",
+    "dataset": {
+      "config_fnv1a64": "ae034bf46ccb5285",
+      "labels_fnv1a64": "b2b609903da61cf0",
+      "manifest_fnv1a64": "f8468ba180f2eac2",
+      "schema_version": "nre.dataset.v1"
+    },
+    "experiment_config_fnv1a64": "e148b19107434b52",
+    "metadata_file": "derivative-supervised-v1.json",
+    "metadata_fnv1a64": "c75b2c794667cda5",
+    "model_version": "nre.model.scalar_price_mlp.v1",
+    "state_file_fnv1a64": "acad288086fb684b"
+  }
+}

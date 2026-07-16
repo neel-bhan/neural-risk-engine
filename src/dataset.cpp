@@ -242,6 +242,8 @@ void validate_config(const DatasetConfig& config) {
       return "antithetic";
     case PricingEstimator::geometric_control_variate:
       return "geometric_control_variate";
+    case PricingEstimator::neural:
+      throw std::invalid_argument("neural estimates are not trusted dataset labels");
   }
   throw std::invalid_argument("unknown pricing estimator");
 }

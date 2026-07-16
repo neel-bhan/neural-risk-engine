@@ -2,13 +2,13 @@
 
 Dataset generation remains in the dependency-free trusted C++ engine. M7 provides the strict
 loader and deterministic polynomial-ridge baseline. M8 layers pinned PyTorch 2.13.0 onto the same
-environment for the scalar-price neural ablations. ONNX remains out of scope until M9.
+environment for the scalar-price neural ablations. M9 adds pinned ONNX export and Python parity.
 
 Create the ignored environment and run the tests:
 
 ```bash
 python3 -m venv .venv
-.venv/bin/python -m pip install -r python/requirements-m8.txt
+.venv/bin/python -m pip install -r python/requirements-m9.txt
 make python-test
 ```
 
@@ -57,3 +57,14 @@ the same four capacity/weight-decay candidates and validation-only selection. St
 and export-ready JSON metadata live under `models/m8/`; machine-readable evidence is
 `benchmarks/m8-neural-v1.json`. The training device is deterministic float64 CPU; Apple MPS was not
 used or tested.
+
+## ONNX export and parity
+
+`make onnx-export` exports only the frozen derivative-supervised checkpoint to a dynamic-batch
+float64 scalar-price graph. `make onnx-evaluate` compares PyTorch autograd with ONNX centered-bump
+Delta over the sealed 180-row held-out set plus 12 fixed boundary probes. Metadata and model live
+under `models/m9/`; machine-readable Python parity is `benchmarks/m9-onnx-python-v1.json`.
+
+The legacy TorchScript ONNX exporter is selected explicitly (`dynamo=false`) because it is the
+tested exporter for PyTorch 2.13.0 in this project. Its deprecation warning is recorded; changing
+exporters is artifact migration work and must reproduce parity before replacing the frozen graph.

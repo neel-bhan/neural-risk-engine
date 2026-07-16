@@ -5,12 +5,14 @@ project(neural_risk_engine VERSION 0.1.0 LANGUAGES CXX)
 find_package(Threads REQUIRED)
 
 option(NRE_WARNINGS_AS_ERRORS "Treat compiler warnings as errors" OFF)
+option(NRE_ENABLE_ONNX "Build the optional ONNX Runtime pricing backend" OFF)
 
 add_library(nre_core
     src/analytics.cpp
     src/dataset.cpp
     src/domain.cpp
     src/monte_carlo.cpp
+    src/neural_router.cpp
     src/pricing.cpp
     src/random.cpp
     src/statistics.cpp
@@ -20,6 +22,20 @@ add_library(nre::core ALIAS nre_core)
 target_include_directories(nre_core PUBLIC include)
 target_compile_features(nre_core PUBLIC cxx_std_20)
 target_link_libraries(nre_core PUBLIC Threads::Threads)
+
+if(NRE_ENABLE_ONNX)
+  find_package(onnxruntime 1.27 CONFIG REQUIRED)
+  add_library(nre_onnx src/onnx_backend.cpp)
+  add_library(nre::onnx ALIAS nre_onnx)
+  target_include_directories(nre_onnx PUBLIC include)
+  target_compile_features(nre_onnx PUBLIC cxx_std_20)
+  target_link_libraries(nre_onnx PUBLIC nre::core onnxruntime::onnxruntime)
+
+  add_executable(nre_m9_guarded_evaluation benchmarks/m9_guarded_evaluation.cpp)
+  target_link_libraries(nre_m9_guarded_evaluation PRIVATE nre::onnx)
+  target_compile_definitions(nre_m9_guarded_evaluation PRIVATE
+      NRE_BUILD_FLAGS="CMake ${CMAKE_BUILD_TYPE} build")
+endif()
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "AppleClang|Clang|GNU")
   target_compile_options(nre_core PRIVATE
@@ -32,10 +48,28 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "AppleClang|Clang|GNU")
   if(NRE_WARNINGS_AS_ERRORS)
     target_compile_options(nre_core PRIVATE -Werror)
   endif()
+  if(NRE_ENABLE_ONNX)
+    target_compile_options(nre_onnx PRIVATE
+        -Wall
+        -Wextra
+        -Wpedantic
+        -Wconversion
+        -Wshadow
+    )
+    if(NRE_WARNINGS_AS_ERRORS)
+      target_compile_options(nre_onnx PRIVATE -Werror)
+    endif()
+  endif()
 elseif(MSVC)
   target_compile_options(nre_core PRIVATE /W4)
   if(NRE_WARNINGS_AS_ERRORS)
     target_compile_options(nre_core PRIVATE /WX)
+  endif()
+  if(NRE_ENABLE_ONNX)
+    target_compile_options(nre_onnx PRIVATE /W4)
+    if(NRE_WARNINGS_AS_ERRORS)
+      target_compile_options(nre_onnx PRIVATE /WX)
+    endif()
   endif()
 endif()
 
@@ -91,4 +125,15 @@ if(BUILD_TESTING)
   target_link_libraries(nre_dataset_tests PRIVATE nre::core)
   target_compile_definitions(nre_dataset_tests PRIVATE NRE_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
   add_test(NAME dataset_tests COMMAND nre_dataset_tests)
+
+  add_executable(nre_neural_router_tests tests/neural_router_tests.cpp)
+  target_link_libraries(nre_neural_router_tests PRIVATE nre::core)
+  add_test(NAME neural_router_tests COMMAND nre_neural_router_tests)
+
+  if(NRE_ENABLE_ONNX)
+    add_executable(nre_onnx_backend_tests tests/onnx_backend_tests.cpp)
+    target_link_libraries(nre_onnx_backend_tests PRIVATE nre::onnx)
+    target_compile_definitions(nre_onnx_backend_tests PRIVATE NRE_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
+    add_test(NAME onnx_backend_tests COMMAND nre_onnx_backend_tests)
+  endif()
 endif()

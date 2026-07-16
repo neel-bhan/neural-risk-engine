@@ -8,11 +8,11 @@ against analytical references, and uses a guarded neural surrogate for eligible 
 The neural model is an accelerator: invalid, unsafe, or out-of-domain results fall back to Monte
 Carlo.
 
-> Status: M8 is complete. The dependency-free C++ engine remains the trusted label backend. A
-> scalar-price PyTorch MLP now supplies Delta only through automatic differentiation and is
-> compared fairly with the M7 polynomial-ridge baseline. Evidence and limitations are in
-> [`docs/M8_NEURAL_MODEL.md`](docs/M8_NEURAL_MODEL.md). ONNX/C++ neural inference and guarded
-> fallback remain M9 work.
+> Status: M9 is complete. The dependency-free C++ Monte Carlo engine remains the trusted backend.
+> The frozen scalar-price MLP is exported to ONNX, evaluated through optional C++ ONNX Runtime,
+> and guarded by domain, finite-output, price-bound, and sampled monotonicity checks with explicit
+> Monte Carlo fallback. Evidence and limitations are in
+> [`docs/M9_ONNX_DEPLOYMENT.md`](docs/M9_ONNX_DEPLOYMENT.md).
 
 ## Why this project is ordered this way
 
@@ -53,6 +53,10 @@ make baseline-evaluate
 make neural-train
 make neural-reproduce
 make neural-evaluate
+make onnx-export
+make onnx-evaluate
+make onnx-check
+make CXXFLAGS='-std=c++20 -O3 -DNDEBUG -Wall -Wextra -Wpedantic -Wconversion -Wshadow -Werror' onnx-evaluate-cpp
 make CXXFLAGS='-std=c++20 -O3 -DNDEBUG -Wall -Wextra -Wpedantic -Wconversion -Wshadow -Werror' performance
 ```
 
@@ -86,12 +90,27 @@ validation-only capacity/regularization search for both ablations, `make neural-
 verifies exact selected tensor checksums, and `make neural-evaluate` reproduces the frozen
 held-out/slice/timing report. See [`docs/M8_NEURAL_MODEL.md`](docs/M8_NEURAL_MODEL.md).
 
+M9 adds pinned ONNX export/runtime dependencies in `python/requirements-m9.txt`. The default
+`make check` remains independent of the C++ runtime. On Apple Silicon, install the optional C++
+runtime with `brew install onnxruntime`; then `make onnx-check` runs cross-language goldens and
+`make onnx-evaluate-cpp` reproduces guarded held-out evidence. The latter requires the ignored M7
+dataset from `make dataset-m7`.
+
 The equivalent CMake workflow is available once CMake 3.24+ is installed:
 
 ```bash
 cmake -S . -B build/cmake -DCMAKE_BUILD_TYPE=Release
 cmake --build build/cmake
 ctest --test-dir build/cmake --output-on-failure
+```
+
+Optional CMake ONNX build on Homebrew:
+
+```bash
+cmake -S . -B build/cmake-onnx -DCMAKE_BUILD_TYPE=Release -DNRE_WARNINGS_AS_ERRORS=ON \
+  -DNRE_ENABLE_ONNX=ON -DCMAKE_PREFIX_PATH="$(brew --prefix onnxruntime)"
+cmake --build build/cmake-onnx
+ctest --test-dir build/cmake-onnx --output-on-failure
 ```
 
 ## Repository map

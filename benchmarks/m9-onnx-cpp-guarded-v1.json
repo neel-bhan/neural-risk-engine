@@ -1,0 +1,53 @@
+{
+  "result_version": "nre.onnx.cpp_guarded.v1",
+  "source_implementation_commit": "PENDING",
+  "artifact_version": "nre.onnx.scalar_price.v1",
+  "model_fnv1a64": "1f60d27245e9e262",
+  "labels_fnv1a64": "b2b609903da61cf0",
+  "heldout_count": 180,
+  "neural_accepted_count": 133,
+  "monte_carlo_fallback_count": 47,
+  "neural_acceptance_rate": 0.73888888888888893,
+  "monte_carlo_fallback_rate": 0.26111111111111113,
+  "fallback_reason_counts": {
+    "input_domain": 0,
+    "non_finite_output": 0,
+    "price_bound": 25,
+    "spot_monotonicity": 10,
+    "volatility_monotonicity": 12,
+    "artifact_runtime_failure": 0
+  },
+  "accepted_neural_metrics": {
+    "count": 133,
+    "median_normalized_price_error": 0.043509863337580508,
+    "p99_normalized_price_error": 0.68517674778105375,
+    "delta_rmse": 0.039011749126922575
+  },
+  "full_routed_metrics": {
+    "count": 180,
+    "median_normalized_price_error": 0.023256074534724464,
+    "p99_normalized_price_error": 0.66517786424593561,
+    "delta_rmse": 0.033533971481856904
+  },
+  "timing": {
+    "scope": "C++ ONNX price plus centered-bump Delta for the full held-out batch; excludes guardrail probes and Monte Carlo fallback",
+    "batch_size": 180,
+    "warmups": 20,
+    "repetitions": 300,
+    "median_microseconds": 138.959,
+    "empirical_p99_microseconds": 158.07782999999998,
+    "single_routed_evaluation_seconds": 1.091302542
+  },
+  "environment": {
+    "onnxruntime_cpp": "1.27.1",
+    "compiler": "Apple LLVM 17.0.0 (clang-1700.0.13.5)",
+    "compiler_flags": "-std=c++20 -O3 -DNDEBUG -Wall -Wextra -Wpedantic -Wconversion -Wshadow -Werror",
+    "cpp_standard": "C++20",
+    "hardware_concurrency": 10
+  },
+  "limitations": [
+    "Guardrails are sampled engineering checks, not formal no-arbitrage guarantees or general OOD detection.",
+    "Accepted-set metrics are reported beside full routed metrics so selective acceptance is visible.",
+    "Timing is descriptive for this machine and is not a matched-error speedup or production latency claim."
+  ]
+}
