@@ -336,6 +336,8 @@ void add_flag(std::vector<std::string>& flags, std::string flag) {
         .market = point.market,
         .backend = PricingBackend::analytical,
         .estimator = PricingEstimator::analytical,
+        .monte_carlo_config = {},
+        .control_variate_config = {},
     });
     analytical_price = analytical.price.estimate;
     analytical_delta = analytical.delta.estimate;
