@@ -1,7 +1,7 @@
 # M9 ONNX C++ deployment and guarded fallback report
 
 This report records deployment of the frozen M8 derivative-supervised scalar-price model. The C++
-Monte Carlo engine remains the trusted backend. Source implementation commit: `PENDING`.
+Monte Carlo engine remains the trusted backend. Source implementation commit: `99f1dab86c4178742660e94c0e9a5cbc26c953a1`.
 
 ## Frozen export contract
 

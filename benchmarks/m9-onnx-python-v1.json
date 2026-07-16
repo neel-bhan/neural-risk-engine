@@ -116,7 +116,7 @@
     "heldout": 180,
     "total_parity": 192
   },
-  "source_implementation_commit": "PENDING",
+  "source_implementation_commit": "99f1dab86c4178742660e94c0e9a5cbc26c953a1",
   "tolerances": {
     "delta_autograd_absolute": 1e-07,
     "delta_autograd_relative": 1e-06,

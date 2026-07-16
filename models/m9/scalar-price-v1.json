@@ -124,7 +124,7 @@
     "spot_chain_rule": "z0=(log(spot/strike)-mean0)/scale0; price=strike*network(z); Delta=dprice/dspot via autograd",
     "version": "nre.preprocessing.neural.v1"
   },
-  "source_implementation_commit": "PENDING",
+  "source_implementation_commit": "99f1dab86c4178742660e94c0e9a5cbc26c953a1",
   "source_neural_artifact": {
     "artifact_version": "nre.neural.artifact.v1",
     "canonical_tensor_sha256": "3fce199452fb0b1cfc82a915819863e7709146216335245faff52f143e2f089c",

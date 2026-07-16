@@ -1,6 +1,6 @@
 {
   "result_version": "nre.onnx.cpp_guarded.v1",
-  "source_implementation_commit": "PENDING",
+  "source_implementation_commit": "99f1dab86c4178742660e94c0e9a5cbc26c953a1",
   "artifact_version": "nre.onnx.scalar_price.v1",
   "model_fnv1a64": "1f60d27245e9e262",
   "labels_fnv1a64": "b2b609903da61cf0",
