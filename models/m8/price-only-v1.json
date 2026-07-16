@@ -127,7 +127,7 @@
     },
     "weight_decay": 1e-06
   },
-  "source_implementation_commit": "PENDING",
+  "source_implementation_commit": "0e0e6b080ef21953a98f8f923e271ddc44479bdd",
   "state": {
     "canonical_tensor_sha256": "4eeee5bbce00387b570763644d89fac9081ea5cbedae6aa590797a144605fb5e",
     "file": "price-only-v1.pt",

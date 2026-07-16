@@ -4,7 +4,7 @@ This report records the frozen M8 price-only and derivative-supervised neural ex
 models are offline comparison artifacts; the C++ Monte Carlo engine remains the trusted backend.
 M8 does not include ONNX, C++ neural inference, deployment guardrails, or fallback.
 
-Source implementation commit: `PENDING` (finalized mechanically by the committing agent).
+Source implementation commit: `0e0e6b080ef21953a98f8f923e271ddc44479bdd`.
 
 ## Frozen protocol
 

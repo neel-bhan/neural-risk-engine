@@ -7,12 +7,12 @@
   "artifacts": {
     "derivative_supervised": {
       "canonical_tensor_sha256": "3fce199452fb0b1cfc82a915819863e7709146216335245faff52f143e2f089c",
-      "metadata_fnv1a64": "b862483b20fd88ef"
+      "metadata_fnv1a64": "c75b2c794667cda5"
     },
     "m7_polynomial_ridge_fnv1a64": "664f6dc270d91457",
     "price_only": {
       "canonical_tensor_sha256": "4eeee5bbce00387b570763644d89fac9081ea5cbedae6aa590797a144605fb5e",
-      "metadata_fnv1a64": "3117e3ce2c028461"
+      "metadata_fnv1a64": "5695d02a6eaf8f41"
     }
   },
   "comparisons": {
@@ -922,6 +922,6 @@
   ],
   "primary_comparison_metric": "held-out median normalized price error with fixed one-currency-unit floor",
   "result_version": "nre.neural.evaluation.v1",
-  "source_implementation_commit": "PENDING",
+  "source_implementation_commit": "0e0e6b080ef21953a98f8f923e271ddc44479bdd",
   "test_access_policy": "one final held-out evaluation after validation-only selection; no post-test tuning"
 }

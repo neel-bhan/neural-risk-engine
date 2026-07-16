@@ -127,7 +127,7 @@
     },
     "weight_decay": 0.0
   },
-  "source_implementation_commit": "PENDING",
+  "source_implementation_commit": "0e0e6b080ef21953a98f8f923e271ddc44479bdd",
   "state": {
     "canonical_tensor_sha256": "3fce199452fb0b1cfc82a915819863e7709146216335245faff52f143e2f089c",
     "file": "derivative-supervised-v1.pt",
