@@ -1,0 +1,25 @@
+# C++ build output
+build/
+cmake-build-*/
+compile_commands.json
+
+# Python environments and caches
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Generated data, models, profiles, and benchmark output
+data/generated/
+models/generated/
+profiles/
+benchmarks/results/
+
+# Editors and operating systems
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
