@@ -1,60 +1,81 @@
-# Completed M1 work queue
+# Completed M2 work queue — correct scalar Monte Carlo
 
-The analytical reference-pricing tasks for **M1** are complete. The next active milestone is
-**M2: correct scalar Monte Carlo** in `docs/ROADMAP.md`.
+M1 analytical reference pricing and the M2 single-thread scalar Monte Carlo reference are complete.
+The next active milestone is **M3: arithmetic Asian and variance reduction** in
+`docs/ROADMAP.md`. The completed M2 sequence is retained below as an implementation record.
 
-## Task 1 — Define pricing result and analytical API (complete)
+## Task 1 — Add streaming statistics (complete)
 
-- Add `include/nre/analytics.hpp`.
-- Define a small result type containing `price` and `delta`.
-- Expose a European Black-Scholes function accepting validated `OptionContract` and `MarketState`.
-- Decide and document whether the function rejects non-European input with an error result or an
-  exception. Do not silently price the wrong style.
-- Add the source to both Make and CMake builds.
+- Accumulate scalar `double` samples with Welford's online mean and squared-deviation update.
+- Report the mean estimate, sample standard error, and the normal-approximation 95% confidence
+  interval specified in `docs/CONVENTIONS.md`.
+- Reject summary requests with fewer than two samples because sample variance is undefined.
+- Test hand-calculated sequences, the two-sample boundary, constant samples, and empty/one-sample
+  behavior.
+- Register the component and its tests in both Make and CMake.
 
-**Done when:** the API compiles and invalid-style behavior has a test.
+**Done when:** strict Make and CMake/CTest builds pass without warnings and no samples need to be
+stored.
 
-## Task 2 — Implement European Black-Scholes (complete)
+## Task 2 — Define deterministic random draws (complete)
 
-- Implement the normal CDF with the C++ standard library.
-- Implement call and put price and spot Delta with continuous dividend yield.
-- Handle zero volatility explicitly using the discounted deterministic terminal spot.
-- Keep near-zero maturity behavior consistent with the public validation contract.
+- Select and document the standard-library pseudo-random engine, seed type, and normal transform.
+- Keep uniform-engine state and normal draws behind a small interface that does not depend on
+  contracts, payoffs, or statistics.
+- Add deterministic tests appropriate to the chosen toolchain; do not treat a fixed sequence as a
+  portability guarantee across different standard-library implementations.
 
-**Done when:** independent high-precision fixtures pass, including a nonzero dividend yield and a
-negative-rate case.
+**Done when:** a caller can reproduce a normal-draw stream from a documented seed and tests detect
+accidental seed or draw-order changes.
 
-## Task 3 — Test invariants, not just examples (complete)
+## Task 3 — Implement exact scalar GBM evolution (complete)
 
-- Test put-call parity.
-- Test call price bounds and put price bounds.
-- Test monotonicity on a small deterministic grid: call price increases with spot; put price
-  decreases with spot.
-- Compare analytical Delta with a centered finite difference of analytical price.
+- Implement the exact risk-neutral GBM step using `double` and the model in
+  `docs/CONVENTIONS.md`.
+- Keep path evolution independent of random-number generation by accepting supplied normal draws.
+- Cover zero volatility, nonzero dividend yield, negative rates, and deterministic supplied draws.
+- Evolve the exact observation schedule `t_i = iT/m`, excluding the initial spot.
 
-**Done when:** tests would catch sign mistakes in discounting, dividend yield, and put Delta.
+**Done when:** deterministic path fixtures and the zero-volatility path agree with hand-calculated
+values without allocating inside an observation loop.
 
-## Task 4 — Derive the geometric-Asian formula on paper first (complete)
+## Task 4 — Add European and geometric-Asian payoffs (complete)
 
-- Derive the mean and variance of the average log spot for `t_i = iT/m`, excluding `t=0`.
-- Put the derivation and final formula in `docs/GEOMETRIC_ASIAN_DERIVATION.md`.
-- Check the formula numerically against a slow experimental simulation before making it a test
-  oracle.
+- Implement call and put payoffs separately from path evolution and aggregation.
+- Compute the discrete geometric average on the documented observation schedule without storing
+  every path payoff.
+- Test in-, at-, and out-of-the-money values and geometric averages from small supplied paths.
 
-**Done when:** another reader can reproduce every discrete-monitoring coefficient from the doc.
+**Done when:** payoff tests are deterministic and would catch call/put sign errors or accidental
+inclusion of the initial spot.
 
-## Task 5 — Implement and validate geometric Asian analytics (complete)
+## Task 5 — Compose the scalar Monte Carlo pricer (complete)
 
-- Add geometric-Asian call/put price and Delta.
-- Add high-precision fixtures produced independently of the C++ implementation.
-- Check geometric put-call parity for the discounted expected geometric average.
-- Check finite-difference Delta.
+- Add a configuration containing a seed and path count, requiring at least two paths.
+- Compose random draws, exact GBM evolution, payoff evaluation, discounting, and streaming
+  statistics without merging their responsibilities.
+- Price European and discrete geometric-Asian calls and puts on one thread.
+- Return the estimate, sample standard error, 95% confidence interval, effective path count, and
+  seed/configuration metadata required by `docs/CONVENTIONS.md`.
 
-**Done when:** M1's exit gate in `docs/ROADMAP.md` passes and the roadmap status is updated.
+**Done when:** fixed-seed integration tests are reproducible and analytical edge cases such as zero
+volatility agree to deterministic numerical tolerance.
 
-## Suggested rhythm for a beginner
+## Task 6 — Validate convergence and interval coverage (complete)
 
-Use one task per session. Before asking an agent to implement it, ask for a two-minute explanation of
-the formula and the tests that will detect common bugs. After implementation, read the relevant test
-names and run `make check` yourself. Keep a short note of what you can now explain without the code;
-that becomes interview preparation.
+- Add a reproducible experiment outside unit tests that compares both pricers with their M1
+  analytical references across many seeds and increasing path counts.
+- Record errors, interval inclusion, and enough configuration metadata to reproduce the run.
+- Check whether error and interval width exhibit the expected `1/sqrt(N)` trend and report measured
+  coverage; do not encode a single lucky seed or a long stochastic experiment as a unit test.
+- Document the command and measured results separately from the expected 95% target.
+- Keep the measured output and interpretation in `docs/M2_CONVERGENCE.md`.
+
+**Done when:** M2's exit gate in `docs/ROADMAP.md` is supported by a short-test suite plus a
+reproducible external convergence report.
+
+## Scope boundary
+
+M2 remains single-threaded and scalar. Random sampling and path simulation begin only in Tasks 2
+and 3. Antithetic sampling, control variates, arithmetic-Asian pricing, threading, SIMD, ML, ONNX,
+and external dependencies belong to later roadmap milestones.

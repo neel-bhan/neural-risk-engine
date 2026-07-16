@@ -48,6 +48,12 @@ spot `delta`; pricing formulas are added only in their corresponding roadmap tas
 - `risk`: portfolio scenarios, Delta results, acceptance/fallback counters.
 - `benchmark`: isolated performance entry points; never part of correctness tests.
 
+The M2 scalar implementation now instantiates `statistics`, `random`, and `monte_carlo` as separate
+standard-library-only modules. Random generation owns only seeded normal draws; deterministic GBM
+evolution accepts supplied draws; payoff calculation is independent; and discounted payoff samples
+flow into streaming statistics. The geometric-Asian pricer allocates one reusable draw buffer
+outside its path loop.
+
 Dependencies should point downward from orchestration to small numerical components. In particular,
 `domain` and `analytics` must not depend on Monte Carlo or ML.
 

@@ -8,9 +8,9 @@ against analytical references, and uses a guarded neural surrogate for eligible 
 The neural model is an accelerator: invalid, unsafe, or out-of-domain results fall back to Monte
 Carlo.
 
-> Status: M1 analytical reference pricing is complete for European and discrete geometric-Asian
-> options. Monte Carlo, arithmetic-Asian pricing, ML, ONNX, and benchmark claims are not
-> implemented yet.
+> Status: M2 scalar Monte Carlo pricing is complete for European and discrete geometric-Asian
+> options, including sample error and confidence intervals. Arithmetic-Asian pricing, variance
+> reduction, threading, ML, ONNX, and performance claims are not implemented yet.
 
 ## Why this project is ordered this way
 
@@ -39,7 +39,12 @@ Only an Apple Clang or GCC-compatible C++20 compiler and `make` are needed right
 ```bash
 make check
 make run
+make convergence
 ```
+
+`make convergence` runs the external M2 many-seed validation experiment; it is intentionally not
+part of the short unit-test target. Its measured report is in
+[`docs/M2_CONVERGENCE.md`](docs/M2_CONVERGENCE.md).
 
 The equivalent CMake workflow is available once CMake 3.24+ is installed:
 
