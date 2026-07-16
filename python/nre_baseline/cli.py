@@ -46,7 +46,7 @@ def evaluate(args: argparse.Namespace) -> None:
     slices = slice_metrics(model, test_rows)
     result = {
         "result_version": "nre.baseline.evaluation.v1",
-        "source_implementation_commit": "PENDING",
+        "source_implementation_commit": "efeafd90af7814912567c59688e1e8dc624fdd1f",
         "artifact_fnv1a64": fnv1a64_file(artifact_path),
         "dataset": expected,
         "test_access_policy": "held-out evaluation only after validation selection; no post-test model tuning",

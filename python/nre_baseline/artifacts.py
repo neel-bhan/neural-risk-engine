@@ -24,7 +24,7 @@ def save_model_artifact(
 ) -> str:
     value = {
         "artifact_version": "nre.baseline.artifact.v1",
-        "source_implementation_commit": "PENDING",
+        "source_implementation_commit": "efeafd90af7814912567c59688e1e8dc624fdd1f",
         "dataset": {
             "schema_version": dataset.schema_version,
             "manifest_fnv1a64": dataset.manifest_checksum,
@@ -56,4 +56,3 @@ def load_model_artifact(path: Path) -> tuple[PolynomialRidgeModel, dict[str, Any
         raise ValueError("unsupported model artifact version")
     model = PolynomialRidgeModel.from_dict(value["model"])
     return model, value
-

@@ -4,7 +4,7 @@ This report records a deterministic polynomial-ridge comparison model for the la
 surrogate. It is an offline Python baseline, not a new trusted pricing backend, and its measured
 errors expose material failure regions.
 
-Source implementation commit: `PENDING`.
+Source implementation commit: `efeafd90af7814912567c59688e1e8dc624fdd1f`.
 
 ## Predeclared protocol
 
