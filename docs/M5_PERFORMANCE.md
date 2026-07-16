@@ -4,7 +4,7 @@ This report records profile-guided scalar work, multithread scaling, and time to
 Carlo confidence-interval target. Results apply only to the stated machine, build, and workloads;
 they are not a low-latency or universal scaling claim.
 
-Source implementation commit: **PENDING — replace with the full final M5 commit after commit**.
+Source implementation commit: `95bece6a2e26d3373ab76e91ab0bde88cc61c5d6`.
 
 ## Protocol and metric definitions
 
