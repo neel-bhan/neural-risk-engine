@@ -44,7 +44,7 @@ whose coefficient is estimated without biasing the reported comparison.
 **Exit gate:** matched-draw experiments report variance and time-to-target-CI for plain,
 antithetic, and control-variate estimators. Degenerate covariance is handled safely.
 
-## M4 — Delta and pricing interface
+## M4 — Delta and pricing interface (implementation validated; source commit pending)
 
 **Learn:** bump-and-revalue, common random numbers, and pathwise sensitivity estimators.
 

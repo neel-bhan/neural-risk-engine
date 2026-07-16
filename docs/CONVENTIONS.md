@@ -96,3 +96,21 @@ estimate +/- 1.96 * standard_error
 This is a numerical diagnostic, not calibrated uncertainty about model error. Coverage tests should
 use many independent seeds against analytical values; a single interval containing the answer is
 not sufficient validation.
+
+## Monte Carlo Delta
+
+The scalar reference uses a pathwise spot derivative. Under GBM, a simulated terminal spot,
+geometric average, or arithmetic average `U` is proportional to initial spot, so `dU/dS(0) =
+U/S(0)`. The discounted pathwise sample is `D * U/S(0)` for an in-the-money call, its negative for
+an in-the-money put, and zero out of the money. At an exact payoff kink, the implementation uses
+half of the left/right derivative jump, matching the analytical zero-volatility convention.
+
+Price and Delta reuse the identical normal draws within each effective sample but accumulate
+separate sampling diagnostics. Antithetic Delta averages the derivatives from `z` and `-z`.
+Arithmetic-Asian control-variate pricing fits separate price and Delta coefficients on the same
+independent pilot stream; the Delta control expectation is the analytical geometric-Asian Delta.
+
+Centered spot bump-and-revalue is an independent validation estimator. Up/down valuations use
+common random numbers and the default scale-aware bump `max(1e-4 * spot, 1e-6)`. A bump is invalid
+when it is non-finite, non-positive, or at least the current spot. Its standard error comes from
+paired finite-difference samples, not from treating up/down price estimates as independent.

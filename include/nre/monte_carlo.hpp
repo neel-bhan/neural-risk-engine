@@ -14,10 +14,18 @@ struct MonteCarloConfig {
   std::size_t path_count;
 };
 
-struct MonteCarloResult {
+struct EstimateDiagnostics {
   double estimate;
   double sample_standard_error;
   ConfidenceInterval confidence_interval_95;
+};
+
+struct MonteCarloResult {
+  // These three fields are the price diagnostics retained for compatibility with the M2/M3 API.
+  double estimate;
+  double sample_standard_error;
+  ConfidenceInterval confidence_interval_95;
+  EstimateDiagnostics delta;
   std::size_t effective_paths;
   std::size_t raw_paths;
   std::uint64_t seed;
@@ -31,6 +39,37 @@ struct ControlVariateConfig {
 
 struct ControlVariateResult {
   MonteCarloResult monte_carlo;
+  double coefficient;
+  double control_expectation;
+  bool control_applied;
+  double delta_coefficient;
+  double delta_control_expectation;
+  bool delta_control_applied;
+  std::size_t pilot_paths;
+  std::uint64_t pilot_seed;
+};
+
+struct PathwiseSample {
+  double discounted_payoff;
+  double discounted_delta;
+};
+
+struct SpotBumpRule {
+  // h = max(relative_size * spot, minimum_absolute_size). The centered estimator requires h < spot.
+  double relative_size{1.0e-4};
+  double minimum_absolute_size{1.0e-6};
+};
+
+struct BumpAndRevalueResult {
+  EstimateDiagnostics delta;
+  std::size_t effective_paths;
+  std::size_t raw_paths;
+  std::uint64_t seed;
+  double spot_bump;
+};
+
+struct ControlVariateBumpAndRevalueResult {
+  BumpAndRevalueResult bump_and_revalue;
   double coefficient;
   double control_expectation;
   bool control_applied;
@@ -60,6 +99,16 @@ struct ControlVariateResult {
                                                      double control_expectation,
                                                      double coefficient) noexcept;
 
+// Computes one discounted payoff and its pathwise spot derivative from the same supplied draws.
+// European contracts require one draw; Asian contracts require exactly contract.observations.
+// At an exact payoff kink, the derivative uses half of the left/right jump.
+[[nodiscard]] PathwiseSample discounted_pathwise_sample(const OptionContract& contract,
+                                                        const MarketState& market,
+                                                        std::span<const double> normal_draws);
+
+// Returns the scale-aware centered spot bump and rejects a non-finite/non-positive rule or h >= S.
+[[nodiscard]] double centered_spot_bump(double spot, const SpotBumpRule& rule);
+
 // Contracts and markets must have passed validate before pricing. Each function rejects a contract
 // of the wrong style, and all reject configurations with fewer than two paths.
 [[nodiscard]] MonteCarloResult price_european_monte_carlo(const OptionContract& contract,
@@ -80,7 +129,21 @@ struct ControlVariateResult {
 // on the pricing stream. The pilot and pricing seeds must differ and both samples need at least two
 // paths. Degenerate control variance produces the plain estimator with control_applied=false.
 [[nodiscard]] ControlVariateResult price_arithmetic_asian_control_variate_monte_carlo(
-    const OptionContract& contract, const MarketState& market,
-    const ControlVariateConfig& config);
+    const OptionContract& contract, const MarketState& market, const ControlVariateConfig& config);
+
+// Independent centered spot bump-and-revalue Delta estimators. Up/down valuations reuse each
+// effective sample's normal draws (common random numbers), so their uncertainty is accumulated
+// from paired finite-difference samples rather than inferred from two price standard errors.
+[[nodiscard]] BumpAndRevalueResult delta_bump_and_revalue_monte_carlo(
+    const OptionContract& contract, const MarketState& market, const MonteCarloConfig& config,
+    const SpotBumpRule& bump_rule = {});
+[[nodiscard]] BumpAndRevalueResult delta_bump_and_revalue_arithmetic_antithetic_monte_carlo(
+    const OptionContract& contract, const MarketState& market, const MonteCarloConfig& config,
+    const SpotBumpRule& bump_rule = {});
+[[nodiscard]] ControlVariateBumpAndRevalueResult
+delta_bump_and_revalue_arithmetic_control_variate_monte_carlo(const OptionContract& contract,
+                                                              const MarketState& market,
+                                                              const ControlVariateConfig& config,
+                                                              const SpotBumpRule& bump_rule = {});
 
 }  // namespace nre

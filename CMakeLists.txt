@@ -8,6 +8,7 @@ add_library(nre_core
     src/analytics.cpp
     src/domain.cpp
     src/monte_carlo.cpp
+    src/pricing.cpp
     src/random.cpp
     src/statistics.cpp
 )
@@ -43,6 +44,9 @@ target_link_libraries(nre_m2_convergence PRIVATE nre::core)
 add_executable(nre_m3_variance_reduction benchmarks/m3_variance_reduction.cpp)
 target_link_libraries(nre_m3_variance_reduction PRIVATE nre::core)
 
+add_executable(nre_m4_delta_validation benchmarks/m4_delta_validation.cpp)
+target_link_libraries(nre_m4_delta_validation PRIVATE nre::core)
+
 include(CTest)
 if(BUILD_TESTING)
   add_executable(nre_tests tests/domain_tests.cpp)
@@ -64,4 +68,8 @@ if(BUILD_TESTING)
   add_executable(nre_monte_carlo_tests tests/monte_carlo_tests.cpp)
   target_link_libraries(nre_monte_carlo_tests PRIVATE nre::core)
   add_test(NAME monte_carlo_tests COMMAND nre_monte_carlo_tests)
+
+  add_executable(nre_pricing_tests tests/pricing_tests.cpp)
+  target_link_libraries(nre_pricing_tests PRIVATE nre::core)
+  add_test(NAME pricing_tests COMMAND nre_pricing_tests)
 endif()

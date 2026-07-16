@@ -62,6 +62,18 @@ coefficient on a separate explicitly seeded pilot sample, and uses the M1 analyt
 price as the known expectation. A numerically degenerate control variance falls back to the plain
 estimator and is exposed in result diagnostics.
 
+M4 adds `pricing` as the validated orchestration boundary. A request owns its contract, market,
+backend/estimator selection, and exactly one compatible numerical configuration. The router rejects
+invalid domain inputs, unsupported style/estimator pairs, missing configuration, and extraneous
+configuration rather than silently substituting an estimator. Analytical and stochastic outputs
+share typed price/Delta estimates; sampling errors, confidence intervals, path counts, seeds, pilot
+metadata, and control metadata are optional only where they are genuinely unavailable.
+
+The scalar Monte Carlo layer now produces price and pathwise Delta from each path's same draws.
+Price and Delta statistics remain separate. The arithmetic control variate fits independent price
+and Delta coefficients on one separate pilot stream, while the CRN bump-and-revalue functions are
+validation APIs rather than router backends.
+
 Dependencies should point downward from orchestration to small numerical components. In particular,
 `domain` and `analytics` must not depend on Monte Carlo or ML.
 

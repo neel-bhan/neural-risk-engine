@@ -8,10 +8,11 @@ against analytical references, and uses a guarded neural surrogate for eligible 
 The neural model is an accelerator: invalid, unsafe, or out-of-domain results fall back to Monte
 Carlo.
 
-> Status: M3 is complete. The single-thread scalar engine prices European, geometric-Asian, and
-> arithmetic-Asian calls and puts, with antithetic sampling and an independent-pilot
-> geometric-Asian control variate for arithmetic Asians. Delta, threading, ML, ONNX, and general
-> performance claims are not implemented yet.
+> Status: M4 implementation and numerical validation are complete locally, pending recording the
+> final source commit in the M4 report. The single-thread scalar engine returns price and pathwise
+> Delta for European, geometric-Asian, and arithmetic-Asian calls and puts through a validated
+> backend-neutral interface. Threading, ML, ONNX, and general performance claims are not
+> implemented yet.
 
 ## Why this project is ordered this way
 
@@ -42,6 +43,7 @@ make check
 make run
 make convergence
 make variance
+make delta-validation
 ```
 
 `make convergence` runs the external M2 many-seed validation experiment; it is intentionally not
@@ -50,6 +52,9 @@ part of the short unit-test target. Its measured report is in
 
 `make variance` runs the external M3 matched-draw variance-reduction experiment. Its measured
 report is in [`docs/M3_VARIANCE_REDUCTION.md`](docs/M3_VARIANCE_REDUCTION.md).
+
+`make delta-validation` runs the external M4 many-seed pathwise/CRN Delta experiment. Its measured
+report is in [`docs/M4_DELTA_VALIDATION.md`](docs/M4_DELTA_VALIDATION.md).
 
 The equivalent CMake workflow is available once CMake 3.24+ is installed:
 
