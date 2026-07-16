@@ -39,6 +39,14 @@ descriptive C++ batch timing. Recreate them with `make onnx-evaluate` and releas
 `make onnx-evaluate-cpp` after `make dataset-m7`. The C++ timing excludes guardrail probes and
 fallback, and is not a matched-error speedup or portfolio benchmark.
 
+M10 adds `m10_portfolio.cpp` and the tracked `m10-portfolio-v1.json`. The benchmark freezes 18
+synthetic positions and nine spot/volatility scenarios, builds 162 ordered requests, evaluates a
+high-budget analytical/control-variate reference vector, selects the first all-Monte-Carlo path
+grid point meeting all full-route error criteria, and separately times raw ONNX, guarded routing,
+the exact fallback subset, and matched all-Monte-Carlo. Run the release build with
+`make portfolio-benchmark`; full methodology and measured evidence are in
+`docs/M10_FINAL_REPORT.md`.
+
 A benchmark report must include commit, compiler and flags, build type, CPU/hardware, thread count,
 seed policy, path/contract/scenario counts, warm-up, repetitions, timing method, and definitions of
 reported metrics.

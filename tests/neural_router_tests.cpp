@@ -124,11 +124,16 @@ int main() {
 
   {
     FakeBackend backend(FakeMode::analytical);
-    const auto routed = nre::price_guarded_neural_batch({fallback_request(150.0)}, backend);
+    const auto request = fallback_request(150.0);
+    const auto trusted = nre::price(request);
+    const auto routed = nre::price_guarded_neural_batch({request}, backend);
     require(routed.items[0].rejection_reason == nre::NeuralRejectionReason::input_domain,
             "out-of-deployment-domain input must have an explicit reason");
     require(routed.items[0].result.backend == nre::PricingBackend::monte_carlo,
             "out-of-domain input must fall back");
+    require(routed.items[0].result.price.estimate == trusted.price.estimate &&
+                routed.items[0].result.delta.estimate == trusted.delta.estimate,
+            "fallback must preserve the exact configured Monte Carlo result");
     require(backend.last_size == 0U, "out-of-domain input must not reach the model");
   }
 

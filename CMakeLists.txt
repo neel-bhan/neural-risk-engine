@@ -15,6 +15,7 @@ add_library(nre_core
     src/neural_router.cpp
     src/pricing.cpp
     src/random.cpp
+    src/risk.cpp
     src/statistics.cpp
 )
 add_library(nre::core ALIAS nre_core)
@@ -34,6 +35,11 @@ if(NRE_ENABLE_ONNX)
   add_executable(nre_m9_guarded_evaluation benchmarks/m9_guarded_evaluation.cpp)
   target_link_libraries(nre_m9_guarded_evaluation PRIVATE nre::onnx)
   target_compile_definitions(nre_m9_guarded_evaluation PRIVATE
+      NRE_BUILD_FLAGS="CMake ${CMAKE_BUILD_TYPE} build")
+
+  add_executable(nre_m10_portfolio benchmarks/m10_portfolio.cpp)
+  target_link_libraries(nre_m10_portfolio PRIVATE nre::onnx)
+  target_compile_definitions(nre_m10_portfolio PRIVATE
       NRE_BUILD_FLAGS="CMake ${CMAKE_BUILD_TYPE} build")
 endif()
 
@@ -129,6 +135,10 @@ if(BUILD_TESTING)
   add_executable(nre_neural_router_tests tests/neural_router_tests.cpp)
   target_link_libraries(nre_neural_router_tests PRIVATE nre::core)
   add_test(NAME neural_router_tests COMMAND nre_neural_router_tests)
+
+  add_executable(nre_risk_tests tests/risk_tests.cpp)
+  target_link_libraries(nre_risk_tests PRIVATE nre::core)
+  add_test(NAME risk_tests COMMAND nre_risk_tests)
 
   if(NRE_ENABLE_ONNX)
     add_executable(nre_onnx_backend_tests tests/onnx_backend_tests.cpp)

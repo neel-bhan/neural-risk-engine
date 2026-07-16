@@ -1,18 +1,30 @@
 # Neural Risk Engine
 
-A learning-first, performance-oriented **C++20 derivatives pricing and risk engine** with an
-optional PyTorch/ONNX acceleration backend.
+A performance-oriented **C++20 derivatives pricing and risk engine** with an optional PyTorch/ONNX
+acceleration backend. The standard-library Monte Carlo path is the trusted implementation; the
+neural model is a guarded batch accelerator, never the sole pricing path.
 
-The long-term system prices European and Asian options with a trusted Monte Carlo engine, validates
+The system prices European and Asian options with a trusted Monte Carlo engine, validates
 against analytical references, and uses a guarded neural surrogate for eligible batched workloads.
 The neural model is an accelerator: invalid, unsafe, or out-of-domain results fall back to Monte
 Carlo.
 
-> Status: M9 is complete. The dependency-free C++ Monte Carlo engine remains the trusted backend.
-> The frozen scalar-price MLP is exported to ONNX, evaluated through optional C++ ONNX Runtime,
-> and guarded by domain, finite-output, price-bound, and sampled monotonicity checks with explicit
-> Monte Carlo fallback. Evidence and limitations are in
-> [`docs/M9_ONNX_DEPLOYMENT.md`](docs/M9_ONNX_DEPLOYMENT.md).
+> Status: M0–M10 are complete. The final 162-repricing synthetic portfolio measured 15.2 ms median
+> for guarded ONNX plus fallback versus 31.6 ms for all Monte Carlo at the documented matched-error
+> rule on Apple M4. Neural acceptance was 58.6%; every rejection used the trusted engine. See the
+> [final report](docs/M10_FINAL_REPORT.md) for scope, p99, error, setup, and limitations.
+
+## Evidence at a glance
+
+| Layer | Measured evidence |
+|---|---|
+| C++ Monte Carlo | Arithmetic control variate: 15.676M raw paths/s at 10 threads, 5.72x scalar latency; [M5 protocol](docs/M5_PERFORMANCE.md) |
+| Neural model | 840 accepted train points; held-out p99 normalized error 1.7388 and Delta RMSE 0.0495 versus ridge 8.6795/0.1209; [M8 report](docs/M8_NEURAL_MODEL.md) |
+| ONNX deployment | Float64 dynamic batch; C++ price/Delta parity, reasoned guardrails and fallback; [M9 report](docs/M9_ONNX_DEPLOYMENT.md) |
+| Portfolio routing | 18 contracts × 9 shocks; guarded median/p99 15.216/15.382 ms, 2.07x matched-MC median speedup; [M10 report](docs/M10_FINAL_REPORT.md) |
+
+Normalized price error uses a fixed one-currency-unit floor. These are machine/workload-specific
+measurements, not production latency, universal speedup, formal no-arbitrage, or OOD guarantees.
 
 ## Why this project is ordered this way
 
@@ -36,7 +48,9 @@ scalar Monte Carlo -> variance reduction -> multithreaded engine
 
 ## Build and test
 
-Only an Apple Clang or GCC-compatible C++20 compiler and `make` are needed right now.
+The trusted engine needs a C++20 compiler and `make`; `make test` stays dependency-free. The full
+`make check` also needs Python 3 and creates `.venv` with pinned NumPy/PyTorch/ONNX packages. CMake
+3.24+ and ONNX Runtime 1.27.x are optional deployment dependencies.
 
 ```bash
 make check
@@ -57,6 +71,7 @@ make onnx-export
 make onnx-evaluate
 make onnx-check
 make CXXFLAGS='-std=c++20 -O3 -DNDEBUG -Wall -Wextra -Wpedantic -Wconversion -Wshadow -Werror' onnx-evaluate-cpp
+make CXXFLAGS='-std=c++20 -O3 -DNDEBUG -Wall -Wextra -Wpedantic -Wconversion -Wshadow -Werror' portfolio-benchmark
 make CXXFLAGS='-std=c++20 -O3 -DNDEBUG -Wall -Wextra -Wpedantic -Wconversion -Wshadow -Werror' performance
 ```
 
@@ -96,6 +111,11 @@ runtime with `brew install onnxruntime`; then `make onnx-check` runs cross-langu
 `make onnx-evaluate-cpp` reproduces guarded held-out evidence. The latter requires the ignored M7
 dataset from `make dataset-m7`.
 
+M10's `make portfolio-benchmark` needs the same Homebrew ONNX Runtime but no generated dataset. It
+recreates the tracked benchmark from the frozen portfolio, reference policy, ONNX artifact, seed
+rule, path grid, warm-ups, and repetitions. It records raw inference, complete guarded routing,
+the exact fallback subset, and matched all-Monte-Carlo as separate timing scopes.
+
 The equivalent CMake workflow is available once CMake 3.24+ is installed:
 
 ```bash
@@ -117,18 +137,18 @@ ctest --test-dir build/cmake-onnx --output-on-failure
 
 ```text
 include/nre/          Public C++ interfaces and domain types
-src/                  C++ implementations and CLI entry points
+src/                  C++ pricing, risk, dataset, and CLI implementations
 tests/                Deterministic tests
 docs/                 Architecture, conventions, roadmap, and next tasks
 python/               Validated dataset loader and offline surrogate toolchain
-benchmarks/           Reserved for reproducible benchmark programs
+benchmarks/           Reproducible numerical/performance programs and tracked JSON evidence
 data/                 Versioned dataset schema/config; generated labels are ignored
 ```
 
 Start with [the quant primer](docs/QUANT_PRIMER.md), then read
 [the conventions](docs/CONVENTIONS.md). The complete staged plan is in
-[the roadmap](docs/ROADMAP.md), and the next implementable tasks are in
-[the work queue](docs/NEXT_STEPS.md).
+[the roadmap](docs/ROADMAP.md). Optional follow-up ideas are separated in
+[the post-project backlog](docs/NEXT_STEPS.md).
 
 ## Intended scope
 
@@ -144,17 +164,8 @@ Start with [the quant primer](docs/QUANT_PRIMER.md), then read
 American exercise, stochastic volatility, market calibration, a trading system, and formal
 arbitrage guarantees are out of scope for the first complete version.
 
-## Metrics (record only after measuring)
+## Resume-ready summary
 
-- Million Monte Carlo paths per second.
-- Speedup over the single-thread scalar baseline.
-- Time to reach a target confidence interval.
-- Median and p99 normalized pricing error.
-- Delta RMSE.
-- Neural speedup versus Monte Carlo at a stated matched error tolerance.
-- Portfolio repricing latency.
-- Neural acceptance and Monte Carlo fallback rates.
-
-Resume bullets remain templates until the benchmark protocol produces real values. See
-[the roadmap](docs/ROADMAP.md#resume-ready-finish-line) for the evidence required before filling
-them in.
+The [roadmap finish line](docs/ROADMAP.md#resume-ready-finish-line) contains three bullets populated
+only from versioned M5, M8, and M10 measurements. Keep their Apple M4, synthetic-workload,
+normalization, and matched-error scope when using them.

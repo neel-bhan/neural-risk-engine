@@ -133,6 +133,13 @@ volatility probes in batches, preserves request order, returns neural results on
 pass, and otherwise calls the ordinary `price` route while recording one reason. Invalid financial
 inputs are rejected before inference because no valid Monte Carlo price exists for them.
 
+M10 adds the dependency-free `risk` workload layer. It owns deterministic synthetic portfolio and
+scenario construction, identity/order preservation, fallback-request seed policy, portfolio error
+aggregation, and matched-tolerance selection. The optional benchmark executable composes that layer
+with `OnnxPricingBackend`; ONNX remains absent from `nre_core`, so trusted pricing and its tests do
+not acquire an inference dependency. Portfolio results remain position-major then scenario-minor,
+and item-level rejection reasons must reconcile exactly with aggregate counters.
+
 Dependencies should point downward from orchestration to small numerical components. In particular,
 `domain` and `analytics` must not depend on Monte Carlo or ML.
 

@@ -6,7 +6,7 @@ BUILD_DIR := build/make
 .PHONY: all run test check convergence variance delta-validation performance dataset-small \
 	dataset-large dataset-m7 dataset-verify dataset-reproduce python-bootstrap python-test \
 	baseline-train baseline-evaluate baseline-reproduce neural-train neural-evaluate \
-	neural-reproduce onnx-export onnx-evaluate onnx-check onnx-evaluate-cpp clean
+	neural-reproduce onnx-export onnx-evaluate onnx-check onnx-evaluate-cpp portfolio-benchmark clean
 
 PYTHON := .venv/bin/python
 M7_DATASET := data/generated/m7-baseline
@@ -54,6 +54,10 @@ $(BUILD_DIR)/neural_router.o: src/neural_router.cpp include/nre/neural_router.hp
 		include/nre/pricing.hpp include/nre/domain.hpp | $(BUILD_DIR)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
+$(BUILD_DIR)/risk.o: src/risk.cpp include/nre/risk.hpp include/nre/neural_router.hpp \
+		include/nre/pricing.hpp include/nre/domain.hpp | $(BUILD_DIR)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+
 $(BUILD_DIR)/dataset.o: src/dataset.cpp include/nre/dataset.hpp include/nre/domain.hpp \
 		include/nre/pricing.hpp include/nre/monte_carlo.hpp | $(BUILD_DIR)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
@@ -94,6 +98,11 @@ $(BUILD_DIR)/neural_router_tests: tests/neural_router_tests.cpp $(BUILD_DIR)/dom
 		$(BUILD_DIR)/monte_carlo.o $(BUILD_DIR)/pricing.o $(BUILD_DIR)/neural_router.o | $(BUILD_DIR)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@
 
+$(BUILD_DIR)/risk_tests: tests/risk_tests.cpp $(BUILD_DIR)/domain.o $(BUILD_DIR)/analytics.o \
+		$(BUILD_DIR)/statistics.o $(BUILD_DIR)/random.o $(BUILD_DIR)/monte_carlo.o \
+		$(BUILD_DIR)/pricing.o $(BUILD_DIR)/neural_router.o $(BUILD_DIR)/risk.o | $(BUILD_DIR)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@
+
 $(BUILD_DIR)/onnx_backend.o: src/onnx_backend.cpp include/nre/onnx_backend.hpp \
 		include/nre/neural_router.hpp | $(BUILD_DIR)
 	@test -n "$(ONNXRUNTIME_PREFIX)" || \
@@ -109,6 +118,13 @@ $(BUILD_DIR)/m9_guarded_evaluation: benchmarks/m9_guarded_evaluation.cpp $(BUILD
 		$(BUILD_DIR)/analytics.o $(BUILD_DIR)/statistics.o $(BUILD_DIR)/random.o \
 		$(BUILD_DIR)/monte_carlo.o $(BUILD_DIR)/pricing.o $(BUILD_DIR)/neural_router.o \
 		$(BUILD_DIR)/onnx_backend.o | $(BUILD_DIR)
+	$(CXX) $(CPPFLAGS) $(ONNX_CPPFLAGS) $(CXXFLAGS) \
+		-DNRE_BUILD_FLAGS='"$(CXXFLAGS)"' $^ $(ONNX_LDFLAGS) -o $@
+
+$(BUILD_DIR)/m10_portfolio: benchmarks/m10_portfolio.cpp $(BUILD_DIR)/domain.o \
+		$(BUILD_DIR)/analytics.o $(BUILD_DIR)/statistics.o $(BUILD_DIR)/random.o \
+		$(BUILD_DIR)/monte_carlo.o $(BUILD_DIR)/pricing.o $(BUILD_DIR)/neural_router.o \
+		$(BUILD_DIR)/risk.o $(BUILD_DIR)/onnx_backend.o | $(BUILD_DIR)
 	$(CXX) $(CPPFLAGS) $(ONNX_CPPFLAGS) $(CXXFLAGS) \
 		-DNRE_BUILD_FLAGS='"$(CXXFLAGS)"' $^ $(ONNX_LDFLAGS) -o $@
 
@@ -147,7 +163,8 @@ run: $(BUILD_DIR)/nre_cli
 
 test: $(BUILD_DIR)/nre_tests $(BUILD_DIR)/analytics_tests $(BUILD_DIR)/statistics_tests \
 		$(BUILD_DIR)/random_tests $(BUILD_DIR)/monte_carlo_tests $(BUILD_DIR)/pricing_tests \
-		$(BUILD_DIR)/threading_tests $(BUILD_DIR)/dataset_tests $(BUILD_DIR)/neural_router_tests
+		$(BUILD_DIR)/threading_tests $(BUILD_DIR)/dataset_tests $(BUILD_DIR)/neural_router_tests \
+		$(BUILD_DIR)/risk_tests
 	./$(BUILD_DIR)/nre_tests
 	./$(BUILD_DIR)/analytics_tests
 	./$(BUILD_DIR)/statistics_tests
@@ -157,6 +174,7 @@ test: $(BUILD_DIR)/nre_tests $(BUILD_DIR)/analytics_tests $(BUILD_DIR)/statistic
 	./$(BUILD_DIR)/threading_tests
 	./$(BUILD_DIR)/dataset_tests
 	./$(BUILD_DIR)/neural_router_tests
+	./$(BUILD_DIR)/risk_tests
 
 convergence: $(BUILD_DIR)/m2_convergence
 	./$(BUILD_DIR)/m2_convergence
@@ -252,6 +270,10 @@ onnx-evaluate-cpp: $(BUILD_DIR)/m9_guarded_evaluation
 	./$(BUILD_DIR)/m9_guarded_evaluation --dataset $(M7_DATASET)/labels.csv \
 		--metadata $(M9_METADATA) --model $(M9_MODEL) \
 		--output benchmarks/m9-onnx-cpp-guarded-v1.json
+
+portfolio-benchmark: $(BUILD_DIR)/m10_portfolio
+	./$(BUILD_DIR)/m10_portfolio --metadata $(M9_METADATA) --model $(M9_MODEL) \
+		--output benchmarks/m10-portfolio-v1.json
 
 check: test python-test
 

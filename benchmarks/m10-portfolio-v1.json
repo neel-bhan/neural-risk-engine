@@ -1,0 +1,268 @@
+{
+  "result_version": "nre.portfolio_benchmark.v1",
+  "source_implementation_commit": "PENDING",
+  "protocol_fnv1a64": "fb71f80210738f0c",
+  "artifact_version": "nre.onnx.scalar_price.v1",
+  "model_fnv1a64": "1f60d27245e9e262",
+  "workload": {
+    "description": "deterministic synthetic portfolio; not client positions or calibrated market data",
+    "position_count": 18,
+    "scenario_count": 9,
+    "repricing_count": 162,
+    "ordering": "position-major then scenario-minor",
+    "spot_multipliers": [0.80, 1.00, 1.20, 0.55],
+    "volatility_shifts": [-0.05, 0.00, 0.10, 0.45],
+    "declared_out_of_domain_scenario_count": 2,
+    "declared_out_of_domain_repricing_count": 36,
+    "near_zero_reference_price_count": 29
+  },
+  "reference": {
+    "analytical_repricing_count": 108,
+    "arithmetic_control_variate_repricing_count": 54,
+    "arithmetic_effective_paths": 131072,
+    "arithmetic_pilot_paths": 32768,
+    "maximum_arithmetic_price_standard_error": 0.022028127014411973,
+    "maximum_arithmetic_delta_standard_error": 0.00061133915264333777
+  },
+  "matched_tolerance": {
+    "rule": "smallest predeclared Monte Carlo path grid candidate whose median and p99 normalized price error and Delta RMSE are each no worse than the full guarded route on the identical reference grid",
+    "price_floor": 1,
+    "candidate_effective_paths": [128, 512, 2048, 8192, 32768, 131072],
+    "selected_effective_paths": 512,
+    "selected_pilot_paths": 128,
+    "guarded_route_tolerance": {
+      "count": 162,
+      "median_normalized_price_error": 0.026905641514226489,
+      "p99_normalized_price_error": 1.0608367033628565,
+      "delta_rmse": 0.026705009097934038
+    },
+    "selected_monte_carlo_metrics": {
+      "count": 162,
+      "median_normalized_price_error": 0.010559838543331538,
+      "p99_normalized_price_error": 0.20575817023051918,
+      "delta_rmse": 0.017091114223518746
+    },
+    "candidate_measurements": [
+      {"effective_paths": 128, "metrics": {
+        "count": 162,
+        "median_normalized_price_error": 0.023610844322843615,
+        "p99_normalized_price_error": 0.43750971601632149,
+        "delta_rmse": 0.040014815971729234
+      }},
+      {"effective_paths": 512, "metrics": {
+        "count": 162,
+        "median_normalized_price_error": 0.010559838543331538,
+        "p99_normalized_price_error": 0.20575817023051918,
+        "delta_rmse": 0.017091114223518746
+      }},
+      {"effective_paths": 2048, "metrics": {
+        "count": 162,
+        "median_normalized_price_error": 0.0062897076234295158,
+        "p99_normalized_price_error": 0.10478901513117292,
+        "delta_rmse": 0.010242982895250385
+      }},
+      {"effective_paths": 8192, "metrics": {
+        "count": 162,
+        "median_normalized_price_error": 0.0030067990757928417,
+        "p99_normalized_price_error": 0.057490174363648082,
+        "delta_rmse": 0.0040166727844359587
+      }},
+      {"effective_paths": 32768, "metrics": {
+        "count": 162,
+        "median_normalized_price_error": 0.00157043293082366,
+        "p99_normalized_price_error": 0.023117617451556331,
+        "delta_rmse": 0.0029369090401780385
+      }},
+      {"effective_paths": 131072, "metrics": {
+        "count": 162,
+        "median_normalized_price_error": 0.00087876412364303286,
+        "p99_normalized_price_error": 0.017384032051484685,
+        "delta_rmse": 0.0010873687273852458
+      }}
+    ]
+  },
+  "routing": {
+    "neural_accepted_count": 95,
+    "monte_carlo_fallback_count": 67,
+    "neural_acceptance_rate": 0.5864197530864198,
+    "monte_carlo_fallback_rate": 0.41358024691358025,
+    "guarded_fallback_effective_paths": 512,
+    "guarded_fallback_pilot_paths": 128,
+    "fallback_reason_counts": {
+      "input_domain": 36,
+      "non_finite_output": 0,
+      "price_bound": 22,
+      "spot_monotonicity": 2,
+      "volatility_monotonicity": 7,
+      "artifact_runtime_failure": 0
+    },
+    "accepted_neural_metrics": {
+      "count": 95,
+      "median_normalized_price_error": 0.046833425324185982,
+      "p99_normalized_price_error": 1.0821024265702344,
+      "delta_rmse": 0.032780865877473406
+    },
+    "full_routed_metrics": {
+      "count": 162,
+      "median_normalized_price_error": 0.026905641514226489,
+      "p99_normalized_price_error": 1.0608367033628565,
+      "delta_rmse": 0.026705009097934038
+    }
+  },
+  "timing": {
+    "timer": "std::chrono::steady_clock",
+    "empirical_p99_definition": "linear empirical quantile; seven-repeat end-to-end p99 is near the observed maximum and is not a production tail estimate",
+    "raw_neural_price_delta_batch": {
+      "warmups": 20,
+      "repetitions": 100,
+      "median_milliseconds": 0.16412499999999999,
+      "empirical_p99_milliseconds": 0.16968425000000023,
+      "repricings_per_second_at_median": 987052.55140898714,
+      "result_checksum": 291035.86974626721
+    },
+    "guarded_route_including_checks_and_fallback": {
+      "warmups": 2,
+      "repetitions": 7,
+      "median_milliseconds": 15.215958000000001,
+      "empirical_p99_milliseconds": 15.38168804,
+      "repricings_per_second_at_median": 10646.717084786906,
+      "result_checksum": 21690.238639970321
+    },
+    "trusted_fallback_subset_only": {
+      "warmups": 2,
+      "repetitions": 7,
+      "median_milliseconds": 13.363625000000001,
+      "empirical_p99_milliseconds": 13.43216698,
+      "repricings_per_second_at_median": 5013.6097054504298,
+      "result_checksum": 10284.281097426367
+    },
+    "matched_tolerance_all_monte_carlo": {
+      "warmups": 2,
+      "repetitions": 7,
+      "median_milliseconds": 31.557416,
+      "empirical_p99_milliseconds": 32.897445519999998,
+      "repricings_per_second_at_median": 5133.5001573005848,
+      "result_checksum": 21471.453826910179
+    },
+    "guarded_neural_speedup_vs_matched_monte_carlo": 2.0739683955489361
+  },
+  "full_routed_style_type_slices": [
+    {"id": "European_call", "metrics": {
+      "count": 27,
+      "median_normalized_price_error": 0.046833425324185982,
+      "p99_normalized_price_error": 0.47884430196262812,
+      "delta_rmse": 0.039442880971055826
+    }, "neural_accepted_count": 20, "fallback_count": 7, "fallback_reason_counts": {"input_domain":6,"non_finite_output":0,"price_bound":1,"spot_monotonicity":0,"volatility_monotonicity":0,"artifact_runtime_failure":0}},
+    {"id": "European_put", "metrics": {
+      "count": 27,
+      "median_normalized_price_error": 0.029722689514150094,
+      "p99_normalized_price_error": 0.49026511691951136,
+      "delta_rmse": 0.017730511208959944
+    }, "neural_accepted_count": 17, "fallback_count": 10, "fallback_reason_counts": {"input_domain":6,"non_finite_output":0,"price_bound":4,"spot_monotonicity":0,"volatility_monotonicity":0,"artifact_runtime_failure":0}},
+    {"id": "geometric Asian_call", "metrics": {
+      "count": 27,
+      "median_normalized_price_error": 0.043897767638202786,
+      "p99_normalized_price_error": 0.49392476080240888,
+      "delta_rmse": 0.02788218699003742
+    }, "neural_accepted_count": 13, "fallback_count": 14, "fallback_reason_counts": {"input_domain":6,"non_finite_output":0,"price_bound":4,"spot_monotonicity":0,"volatility_monotonicity":4,"artifact_runtime_failure":0}},
+    {"id": "geometric Asian_put", "metrics": {
+      "count": 27,
+      "median_normalized_price_error": 0.011753995207002861,
+      "p99_normalized_price_error": 0.85389186607514123,
+      "delta_rmse": 0.018457184610074541
+    }, "neural_accepted_count": 14, "fallback_count": 13, "fallback_reason_counts": {"input_domain":6,"non_finite_output":0,"price_bound":6,"spot_monotonicity":1,"volatility_monotonicity":0,"artifact_runtime_failure":0}},
+    {"id": "arithmetic Asian_call", "metrics": {
+      "count": 27,
+      "median_normalized_price_error": 0.020025988337318456,
+      "p99_normalized_price_error": 1.1976891306191746,
+      "delta_rmse": 0.031241746144516868
+    }, "neural_accepted_count": 16, "fallback_count": 11, "fallback_reason_counts": {"input_domain":6,"non_finite_output":0,"price_bound":2,"spot_monotonicity":0,"volatility_monotonicity":3,"artifact_runtime_failure":0}},
+    {"id": "arithmetic Asian_put", "metrics": {
+      "count": 27,
+      "median_normalized_price_error": 0.02081777594491542,
+      "p99_normalized_price_error": 0.85145373731511553,
+      "delta_rmse": 0.017739855164580307
+    }, "neural_accepted_count": 15, "fallback_count": 12, "fallback_reason_counts": {"input_domain":6,"non_finite_output":0,"price_bound":5,"spot_monotonicity":1,"volatility_monotonicity":0,"artifact_runtime_failure":0}}
+  ],
+  "full_routed_scenario_slices": [
+    {"id": "spot_down_20_vol_down_5", "metrics": {
+      "count": 18,
+      "median_normalized_price_error": 0.1064909793483608,
+      "p99_normalized_price_error": 1.3124418529743744,
+      "delta_rmse": 0.032451125842452085
+    }, "neural_accepted_count": 13, "fallback_count": 5, "fallback_reason_counts": {"input_domain":0,"non_finite_output":0,"price_bound":3,"spot_monotonicity":0,"volatility_monotonicity":2,"artifact_runtime_failure":0}},
+    {"id": "spot_down_20_vol_up_10", "metrics": {
+      "count": 18,
+      "median_normalized_price_error": 0.039774102086962991,
+      "p99_normalized_price_error": 0.47446423432801754,
+      "delta_rmse": 0.025606916390199675
+    }, "neural_accepted_count": 18, "fallback_count": 0, "fallback_reason_counts": {"input_domain":0,"non_finite_output":0,"price_bound":0,"spot_monotonicity":0,"volatility_monotonicity":0,"artifact_runtime_failure":0}},
+    {"id": "spot_flat_vol_down_5", "metrics": {
+      "count": 18,
+      "median_normalized_price_error": 0.057683060856634612,
+      "p99_normalized_price_error": 0.68490382885665935,
+      "delta_rmse": 0.015607689148542252
+    }, "neural_accepted_count": 12, "fallback_count": 6, "fallback_reason_counts": {"input_domain":0,"non_finite_output":0,"price_bound":5,"spot_monotonicity":0,"volatility_monotonicity":1,"artifact_runtime_failure":0}},
+    {"id": "base", "metrics": {
+      "count": 18,
+      "median_normalized_price_error": 0.029514019860845127,
+      "p99_normalized_price_error": 0.35632412676325165,
+      "delta_rmse": 0.015007463387674955
+    }, "neural_accepted_count": 13, "fallback_count": 5, "fallback_reason_counts": {"input_domain":0,"non_finite_output":0,"price_bound":5,"spot_monotonicity":0,"volatility_monotonicity":0,"artifact_runtime_failure":0}},
+    {"id": "spot_flat_vol_up_10", "metrics": {
+      "count": 18,
+      "median_normalized_price_error": 0.028201179525467815,
+      "p99_normalized_price_error": 0.47683885147479477,
+      "delta_rmse": 0.023753705720473531
+    }, "neural_accepted_count": 14, "fallback_count": 4, "fallback_reason_counts": {"input_domain":0,"non_finite_output":0,"price_bound":4,"spot_monotonicity":0,"volatility_monotonicity":0,"artifact_runtime_failure":0}},
+    {"id": "spot_up_20_vol_down_5", "metrics": {
+      "count": 18,
+      "median_normalized_price_error": 0.022321563280674993,
+      "p99_normalized_price_error": 0.29175936977951267,
+      "delta_rmse": 0.039668320448423909
+    }, "neural_accepted_count": 12, "fallback_count": 6, "fallback_reason_counts": {"input_domain":0,"non_finite_output":0,"price_bound":2,"spot_monotonicity":2,"volatility_monotonicity":2,"artifact_runtime_failure":0}},
+    {"id": "spot_up_20_vol_up_10", "metrics": {
+      "count": 18,
+      "median_normalized_price_error": 0.021892084801103443,
+      "p99_normalized_price_error": 0.2303925423217183,
+      "delta_rmse": 0.037550598017962837
+    }, "neural_accepted_count": 13, "fallback_count": 5, "fallback_reason_counts": {"input_domain":0,"non_finite_output":0,"price_bound":3,"spot_monotonicity":0,"volatility_monotonicity":2,"artifact_runtime_failure":0}},
+    {"id": "ood_spot_down_45", "metrics": {
+      "count": 18,
+      "median_normalized_price_error": 0.0046325372867158082,
+      "p99_normalized_price_error": 0.093338465554144698,
+      "delta_rmse": 0.0041618705395175485
+    }, "neural_accepted_count": 0, "fallback_count": 18, "fallback_reason_counts": {"input_domain":18,"non_finite_output":0,"price_bound":0,"spot_monotonicity":0,"volatility_monotonicity":0,"artifact_runtime_failure":0}},
+    {"id": "ood_vol_up_45", "metrics": {
+      "count": 18,
+      "median_normalized_price_error": 0.016750295562815508,
+      "p99_normalized_price_error": 0.12969221477709045,
+      "delta_rmse": 0.025992714063586136
+    }, "neural_accepted_count": 0, "fallback_count": 18, "fallback_reason_counts": {"input_domain":18,"non_finite_output":0,"price_bound":0,"spot_monotonicity":0,"volatility_monotonicity":0,"artifact_runtime_failure":0}}
+  ],
+  "worst_full_routed_examples": [
+    {"position_id": "arithmetic Asian_call_3", "scenario_id": "spot_down_20_vol_down_5", "reference_price": 0.29963445104392916, "routed_price": 1.662930463094543, "normalized_price_error": 1.3632960120506139, "reference_delta": 0.043061360800253738, "routed_delta": 0.11091084782713367, "neural_accepted": true, "rejection_reason": "none"},
+    {"position_id": "geometric Asian_put_1", "scenario_id": "spot_down_20_vol_down_5", "reference_price": 1.5963949387696101, "routed_price": 3.2952048385420474, "normalized_price_error": 1.0641538998374434, "reference_delta": -0.45080668918625927, "routed_delta": -0.4627743085355851, "neural_accepted": true, "rejection_reason": "none"},
+    {"position_id": "arithmetic Asian_put_1", "scenario_id": "spot_down_20_vol_down_5", "reference_price": 1.5722611048368929, "routed_price": 3.2368388927608249, "normalized_price_error": 1.0587158728299242, "reference_delta": -0.44755537268398937, "routed_delta": -0.46246632057322934, "neural_accepted": true, "rejection_reason": "none"},
+    {"position_id": "arithmetic Asian_call_3", "scenario_id": "spot_flat_vol_down_5", "reference_price": 2.8110954188790922, "routed_price": 4.8529246478277503, "normalized_price_error": 0.72634646808354364, "reference_delta": 0.23775772222039238, "routed_delta": 0.23075091035376083, "neural_accepted": true, "rejection_reason": "none"},
+    {"position_id": "European_put_1", "scenario_id": "spot_flat_vol_up_10", "reference_price": 1.026398149223279, "routed_price": 0.46385946418563417, "normalized_price_error": 0.54807063463953321, "reference_delta": -0.10037784080094748, "routed_delta": -0.1016653073597773, "neural_accepted": true, "rejection_reason": "none"}
+  ],
+  "environment": {
+    "measured_date": "2026-07-16",
+    "hardware": "Apple M4 MacBook Air, arm64",
+    "hardware_concurrency": 10,
+    "configured_threads_per_monte_carlo_request": 10,
+    "onnxruntime_cpp": "1.27.1",
+    "compiler": "Apple LLVM 17.0.0 (clang-1700.0.13.5)",
+    "compiler_flags": "-std=c++20 -O3 -DNDEBUG -Wall -Wextra -Wpedantic -Wconversion -Wshadow -Werror",
+    "cpp_standard": "C++20",
+    "master_seed": 202607160010
+  },
+  "limitations": [
+    "The portfolio and shocks are synthetic and the model is not calibrated to market data.",
+    "The arithmetic-Asian reference is a finite high-budget control-variate estimate; its maximum reported sampling errors provide context rather than certainty.",
+    "Matched-tolerance selection is descriptive on this frozen portfolio and candidate grid, not a universal speedup claim.",
+    "Guardrails are finite engineering checks, not formal no-arbitrage guarantees, calibrated confidence, or general OOD detection.",
+    "Timing applies to this machine and includes per-request Monte Carlo thread creation; it is not a production latency claim."
+  ]
+}
