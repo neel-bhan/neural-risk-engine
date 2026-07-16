@@ -141,3 +141,15 @@ control-pilot diagnostics where applicable. Validation/test use greater path and
 tighter declared SE limits than training. Rejected rows remain auditable but are not eligible for
 training. Analytical price/Delta values for European and geometric Asians are validation fields,
 not replacements for the Monte Carlo label.
+
+## M7 baseline error convention
+
+The predeclared M7 normalized price error is
+`abs(predicted-reference) / max(reference, 1 currency unit)`. The one-unit floor was fixed before
+test evaluation. Results also report absolute errors and the count and dedicated slice of reference
+prices below the floor, so the denominator does not conceal poor near-zero-option behavior.
+
+The polynomial-ridge baseline fits price divided by strike and Delta as separate regression
+targets. Its reported Delta RMSE is a useful empirical comparison, but the Delta is not derived
+from the price output and has no derivative-consistency claim. M8 neural Delta must instead be
+derived from the scalar neural price through automatic differentiation.

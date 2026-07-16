@@ -34,3 +34,15 @@ at generated labels merely to hide a rejected row. Rejected rows stay in `labels
 
 See [`DATASET_SCHEMA_V1.md`](DATASET_SCHEMA_V1.md) for the schema and
 [`../docs/M6_DATASET_GENERATION.md`](../docs/M6_DATASET_GENERATION.md) for measured evidence.
+
+M7 freezes `data/config/m7-baseline.cfg` at 200 points per style/type and uses the same generator:
+
+```bash
+make clean
+make CXXFLAGS='-std=c++20 -O3 -DNDEBUG -Wall -Wextra -Wpedantic -Wconversion -Wshadow -Werror' dataset-m7
+PYTHONPATH=python .venv/bin/python -m nre_baseline.cli validate \
+  --dataset data/generated/m7-baseline --config data/config/m7-baseline.cfg
+```
+
+The 1,200-row output remains ignored. Its actual configuration, checksums, generation cost, quality
+exclusions, and baseline consumption are recorded in [`../docs/M7_BASELINE.md`](../docs/M7_BASELINE.md).

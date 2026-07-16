@@ -86,7 +86,7 @@ configuration; analytical subsets pass cross-checks.
 The schema, deterministic generator, quality policy, small-run measurements, and regeneration
 evidence are in [`M6_DATASET_GENERATION.md`](M6_DATASET_GENERATION.md).
 
-## M7 — Simple surrogate baseline
+## M7 — Simple surrogate baseline (complete)
 
 **Learn:** feature scaling, polynomial regression or gradient boosting, error distributions, and
 slice-based evaluation.
@@ -96,6 +96,11 @@ p95/p99, worst-slice price error, and Delta RMSE if the baseline supports Delta.
 
 **Exit gate:** metrics and artifacts are reproducible. The neural model must beat this baseline on a
 predeclared metric or justify a different deployment tradeoff.
+
+The deterministic environment, strict loader, versioned artifact, one-time held-out evaluation,
+slice failures, and warmed Python inference measurements are recorded in
+[`M7_BASELINE.md`](M7_BASELINE.md). The implementation source commit remains a mechanical metadata
+finalization by the committing agent.
 
 ## M8 — Derivative-supervised PyTorch model
 

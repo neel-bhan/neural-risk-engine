@@ -28,6 +28,11 @@ plain, antithetic, and geometric-control-variate estimators. These are isolated 
 not portfolio scenarios. `--profile-european` and `--profile-arithmetic` provide long scalar runs for
 sampling profilers. See `docs/M5_PERFORMANCE.md` for exact commands and measured evidence.
 
+M7 adds `m7-polynomial-ridge-v1.json`, a tracked machine-readable held-out summary rather than a C++
+benchmark program. It records the fixed normalized/absolute error metrics, Delta RMSE, style/type and
+domain-boundary slices, and warmed Python batch timings. Recreate it with `make baseline-evaluate`
+only after regenerating the checksum-bound M7 dataset and deterministic model artifact.
+
 A benchmark report must include commit, compiler and flags, build type, CPU/hardware, thread count,
 seed policy, path/contract/scenario counts, warm-up, repetitions, timing method, and definitions of
 reported metrics.

@@ -102,6 +102,15 @@ the schema, domain, compiler/build/hardware summary, config and label checksums,
 counts, and quality results. Failed quality gates retain the row for audit but set
 `included_for_training=false`. Generated artifacts never become source dependencies.
 
+M7 adds an offline Python layer without changing the trusted C++ engine. The loader binds a dataset
+to its versioned schema, manifest/config checksum, and label checksum before exposing accepted rows.
+It rejects non-finite fields, duplicate ids, inconsistent split counts, and schema drift. A
+training-only preprocessor maps dimensionless log moneyness and the remaining market/contract
+features into a polynomial basis. A deterministic ridge solve fits price divided by strike and a
+plainly separate Delta target; validation alone selects the declared degree and regularization.
+The JSON artifact carries the fitted preprocessing, basis order, coefficients, dataset provenance,
+and selection table. This baseline is offline comparison evidence, not a C++ pricing backend.
+
 Dependencies should point downward from orchestration to small numerical components. In particular,
 `domain` and `analytics` must not depend on Monte Carlo or ML.
 

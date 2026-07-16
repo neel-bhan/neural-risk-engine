@@ -4,7 +4,14 @@ CXXFLAGS ?= -std=c++20 -O2 -Wall -Wextra -Wpedantic -Wconversion -Wshadow
 BUILD_DIR := build/make
 
 .PHONY: all run test check convergence variance delta-validation performance dataset-small \
-	dataset-large dataset-verify dataset-reproduce clean
+	dataset-large dataset-m7 dataset-verify dataset-reproduce python-bootstrap python-test \
+	baseline-train baseline-evaluate baseline-reproduce clean
+
+PYTHON := .venv/bin/python
+M7_DATASET := data/generated/m7-baseline
+M7_CONFIG := data/config/m7-baseline.cfg
+M7_ARTIFACT := models/m7/polynomial-ridge-v1.json
+M7_RESULTS := benchmarks/m7-polynomial-ridge-v1.json
 
 all: $(BUILD_DIR)/nre_cli
 
@@ -131,6 +138,9 @@ dataset-large: $(BUILD_DIR)/nre_dataset
 	./$(BUILD_DIR)/nre_dataset --config $(or $(DATASET_CONFIG),data/config/m6-large.cfg) \
 		--output $(or $(DATASET_OUTPUT),data/generated/m6-large)
 
+dataset-m7: $(BUILD_DIR)/nre_dataset
+	./$(BUILD_DIR)/nre_dataset --config $(M7_CONFIG) --output $(M7_DATASET)
+
 dataset-verify: $(BUILD_DIR)/nre_dataset
 	./$(BUILD_DIR)/nre_dataset --verify $(or $(DATASET_OUTPUT),data/generated/m6-small)
 
@@ -142,7 +152,33 @@ dataset-reproduce: $(BUILD_DIR)/nre_dataset
 	cmp data/generated/m6-small/labels.csv data/generated/m6-small-reproduction/labels.csv
 	cmp data/generated/m6-small/manifest.json data/generated/m6-small-reproduction/manifest.json
 
-check: test
+.venv/.m7-ready: python/requirements-m7.txt
+	python3 -m venv .venv
+	$(PYTHON) -m pip install --disable-pip-version-check -r python/requirements-m7.txt
+	touch $@
+
+python-bootstrap: .venv/.m7-ready
+
+python-test: python-bootstrap
+	PYTHONPATH=python $(PYTHON) -m unittest discover -s python/tests -v
+
+baseline-train: python-bootstrap
+	PYTHONPATH=python $(PYTHON) -m nre_baseline.cli train --dataset $(M7_DATASET) \
+		--config $(M7_CONFIG) --artifact $(M7_ARTIFACT)
+
+baseline-evaluate: python-bootstrap
+	PYTHONPATH=python $(PYTHON) -m nre_baseline.cli evaluate --dataset $(M7_DATASET) \
+		--config $(M7_CONFIG) --artifact $(M7_ARTIFACT) --output $(M7_RESULTS)
+
+baseline-reproduce: python-bootstrap
+	rm -f models/generated/m7-reproduction-a.json models/generated/m7-reproduction-b.json
+	PYTHONPATH=python $(PYTHON) -m nre_baseline.cli train --dataset $(M7_DATASET) \
+		--config $(M7_CONFIG) --artifact models/generated/m7-reproduction-a.json
+	PYTHONPATH=python $(PYTHON) -m nre_baseline.cli train --dataset $(M7_DATASET) \
+		--config $(M7_CONFIG) --artifact models/generated/m7-reproduction-b.json
+	cmp models/generated/m7-reproduction-a.json models/generated/m7-reproduction-b.json
+
+check: test python-test
 
 clean:
 	rm -rf build

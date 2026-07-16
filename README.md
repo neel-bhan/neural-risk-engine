@@ -8,12 +8,10 @@ against analytical references, and uses a guarded neural surrogate for eligible 
 The neural model is an accelerator: invalid, unsafe, or out-of-domain results fall back to Monte
 Carlo.
 
-> Status: M6 is complete. The dependency-free C++ engine has an explicit scalar reference mode and
-> deterministic multithreaded execution for plain, antithetic, and geometric-control-variate price
-> and pathwise-Delta estimators, plus versioned deterministic dataset generation through the same
-> pricing interface. Dataset evidence is in
-> [`docs/M6_DATASET_GENERATION.md`](docs/M6_DATASET_GENERATION.md); surrogate models and ONNX are not
-> implemented yet.
+> Status: M7 is complete. The dependency-free C++ engine remains the trusted label backend, and a
+> deterministic polynomial-ridge Python baseline now provides the comparison floor for M8. The
+> held-out baseline evidence is in [`docs/M7_BASELINE.md`](docs/M7_BASELINE.md). PyTorch and ONNX are
+> not implemented yet.
 
 ## Why this project is ordered this way
 
@@ -47,6 +45,10 @@ make variance
 make delta-validation
 make dataset-small
 make dataset-verify
+make python-test
+make dataset-m7
+make baseline-reproduce
+make baseline-evaluate
 make CXXFLAGS='-std=c++20 -O3 -DNDEBUG -Wall -Wextra -Wpedantic -Wconversion -Wshadow -Werror' performance
 ```
 
@@ -69,6 +71,12 @@ validates it while writing. `make dataset-verify` independently checks its row c
 `make dataset-reproduce` requires two fresh runs to be byte-identical. The schema, configurable
 larger command, and measured small run are documented in [`data/README.md`](data/README.md).
 
+M7 uses an isolated `.venv` and one pinned numerical dependency. `make python-test` creates the
+environment when needed. `make dataset-m7` generates the ignored 1,200-row label set,
+`make baseline-reproduce` proves byte-identical deterministic training, and
+`make baseline-evaluate` writes the versioned held-out summary. See
+[`python/README.md`](python/README.md) and [`docs/M7_BASELINE.md`](docs/M7_BASELINE.md).
+
 The equivalent CMake workflow is available once CMake 3.24+ is installed:
 
 ```bash
@@ -84,7 +92,7 @@ include/nre/          Public C++ interfaces and domain types
 src/                  C++ implementations and CLI entry points
 tests/                Deterministic tests
 docs/                 Architecture, conventions, roadmap, and next tasks
-python/               Reserved for the later ML toolchain
+python/               Validated dataset loader and offline surrogate toolchain
 benchmarks/           Reserved for reproducible benchmark programs
 data/                 Versioned dataset schema/config; generated labels are ignored
 ```
