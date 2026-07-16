@@ -74,6 +74,20 @@ Price and Delta statistics remain separate. The arithmetic control variate fits 
 and Delta coefficients on one separate pilot stream, while the CRN bump-and-revalue functions are
 validation APIs rather than router backends.
 
+M5 extends `MonteCarloConfig` with a requested thread count while preserving `thread_count = 1` as
+the scalar reference. Effective samples are split by quotient and remainder; requested workers are
+capped at the number of samples. Every active worker owns its RNG, reusable draw buffer, price
+statistics, and Delta statistics. Cache-line-aligned worker records keep independently written
+accumulators apart, and the caller merges them in ascending worker-index order with Chan/Welford
+formulas after joining all threads. Pilot and pricing phases of the control variate use the same
+policy independently. No allocation occurs inside an effective-sample or observation loop.
+
+The multithreaded finite estimate is deterministic for a fixed thread count, but it is not required
+to equal scalar output bit for bit because it uses distinct worker streams. Analytical agreement,
+statistical scalar/threaded agreement, deterministic zero-volatility cases, and exact metadata/count
+invariants provide the correctness checks. Requested and active worker counts are returned through
+the backend-neutral pricing result.
+
 Dependencies should point downward from orchestration to small numerical components. In particular,
 `domain` and `analytics` must not depend on Monte Carlo or ML.
 

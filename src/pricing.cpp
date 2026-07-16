@@ -50,6 +50,8 @@ PricingMetadata monte_carlo_metadata(const MonteCarloResult& result) {
       .effective_paths = result.effective_paths,
       .raw_paths = result.raw_paths,
       .seed = result.seed,
+      .requested_threads = result.requested_threads,
+      .active_threads = result.active_threads,
   };
 }
 
@@ -165,6 +167,7 @@ UnifiedPricingResult price(const PricingRequest& request) {
       auto metadata = monte_carlo_metadata(result.monte_carlo);
       metadata.pilot_paths = result.pilot_paths;
       metadata.pilot_seed = result.pilot_seed;
+      metadata.pilot_active_threads = result.pilot_active_threads;
       metadata.price_control_coefficient = result.coefficient;
       metadata.price_control_expectation = result.control_expectation;
       metadata.price_control_applied = result.control_applied;

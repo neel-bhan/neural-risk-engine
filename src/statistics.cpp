@@ -19,6 +19,24 @@ void StreamingStatistics::add(double sample) noexcept {
   sum_squared_deviations_ += delta * delta_from_updated_mean;
 }
 
+void StreamingStatistics::merge(const StreamingStatistics& other) noexcept {
+  if (other.count_ == 0U) {
+    return;
+  }
+  if (count_ == 0U) {
+    *this = other;
+    return;
+  }
+  const double first_count = static_cast<double>(count_);
+  const double second_count = static_cast<double>(other.count_);
+  const double combined_count = first_count + second_count;
+  const double delta = other.mean_ - mean_;
+  sum_squared_deviations_ += other.sum_squared_deviations_ +
+                             delta * delta * first_count * second_count / combined_count;
+  mean_ += delta * second_count / combined_count;
+  count_ += other.count_;
+}
+
 std::size_t StreamingStatistics::count() const noexcept { return count_; }
 
 StatisticsSummary StreamingStatistics::summary() const {
@@ -53,6 +71,30 @@ void StreamingBivariateStatistics::add(double first_sample, double second_sample
   first_sum_squared_deviations_ += first_delta * (first_sample - first_mean_);
   second_sum_squared_deviations_ += second_delta * (second_sample - second_mean_);
   sum_cross_deviations_ += first_delta * (second_sample - second_mean_);
+}
+
+void StreamingBivariateStatistics::merge(const StreamingBivariateStatistics& other) noexcept {
+  if (other.count_ == 0U) {
+    return;
+  }
+  if (count_ == 0U) {
+    *this = other;
+    return;
+  }
+  const double first_count = static_cast<double>(count_);
+  const double second_count = static_cast<double>(other.count_);
+  const double combined_count = first_count + second_count;
+  const double first_delta = other.first_mean_ - first_mean_;
+  const double second_delta = other.second_mean_ - second_mean_;
+  const double weight = first_count * second_count / combined_count;
+  first_sum_squared_deviations_ +=
+      other.first_sum_squared_deviations_ + first_delta * first_delta * weight;
+  second_sum_squared_deviations_ +=
+      other.second_sum_squared_deviations_ + second_delta * second_delta * weight;
+  sum_cross_deviations_ += other.sum_cross_deviations_ + first_delta * second_delta * weight;
+  first_mean_ += first_delta * second_count / combined_count;
+  second_mean_ += second_delta * second_count / combined_count;
+  count_ += other.count_;
 }
 
 std::size_t StreamingBivariateStatistics::count() const noexcept { return count_; }

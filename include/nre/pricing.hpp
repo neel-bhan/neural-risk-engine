@@ -33,8 +33,11 @@ struct PricingMetadata {
   std::optional<std::size_t> effective_paths;
   std::optional<std::size_t> raw_paths;
   std::optional<std::uint64_t> seed;
+  std::optional<std::size_t> requested_threads;
+  std::optional<std::size_t> active_threads;
   std::optional<std::size_t> pilot_paths;
   std::optional<std::uint64_t> pilot_seed;
+  std::optional<std::size_t> pilot_active_threads;
   std::optional<double> price_control_coefficient;
   std::optional<double> price_control_expectation;
   std::optional<bool> price_control_applied;

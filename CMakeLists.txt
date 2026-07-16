@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.24)
 
 project(neural_risk_engine VERSION 0.1.0 LANGUAGES CXX)
 
+find_package(Threads REQUIRED)
+
 option(NRE_WARNINGS_AS_ERRORS "Treat compiler warnings as errors" OFF)
 
 add_library(nre_core
@@ -16,6 +18,7 @@ add_library(nre::core ALIAS nre_core)
 
 target_include_directories(nre_core PUBLIC include)
 target_compile_features(nre_core PUBLIC cxx_std_20)
+target_link_libraries(nre_core PUBLIC Threads::Threads)
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "AppleClang|Clang|GNU")
   target_compile_options(nre_core PRIVATE
@@ -47,6 +50,9 @@ target_link_libraries(nre_m3_variance_reduction PRIVATE nre::core)
 add_executable(nre_m4_delta_validation benchmarks/m4_delta_validation.cpp)
 target_link_libraries(nre_m4_delta_validation PRIVATE nre::core)
 
+add_executable(nre_m5_performance benchmarks/m5_performance.cpp)
+target_link_libraries(nre_m5_performance PRIVATE nre::core)
+
 include(CTest)
 if(BUILD_TESTING)
   add_executable(nre_tests tests/domain_tests.cpp)
@@ -72,4 +78,8 @@ if(BUILD_TESTING)
   add_executable(nre_pricing_tests tests/pricing_tests.cpp)
   target_link_libraries(nre_pricing_tests PRIVATE nre::core)
   add_test(NAME pricing_tests COMMAND nre_pricing_tests)
+
+  add_executable(nre_threading_tests tests/threading_tests.cpp)
+  target_link_libraries(nre_threading_tests PRIVATE nre::core)
+  add_test(NAME threading_tests COMMAND nre_threading_tests)
 endif()

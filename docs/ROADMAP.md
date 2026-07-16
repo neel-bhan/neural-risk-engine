@@ -54,7 +54,7 @@ diagnostics including confidence intervals and effective sample count.
 **Exit gate:** Monte Carlo Delta agrees with analytical European/geometric Delta within statistical
 tolerance and with finite differences using common random numbers.
 
-## M5 — Multithreading and performance engineering
+## M5 — Multithreading and performance engineering (complete)
 
 **Learn:** work partitioning, deterministic reduction, false sharing, profiling, compiler flags,
 and throughput-versus-latency measurement.
@@ -64,6 +64,10 @@ profiling notes, and a reproducible benchmark harness. Add SIMD only if profilin
 
 **Exit gate:** correctness is invariant across configured thread counts within documented floating-
 point tolerance. Reports include paths/s, scaling, time to target CI, compiler/config, and hardware.
+
+The implementation, profile evidence, release protocol, and machine-specific measurements are in
+[`M5_PERFORMANCE.md`](M5_PERFORMANCE.md). Source commit finalization remains a mechanical metadata
+update by the committing agent.
 
 At this point the project is already a credible C++/numerical-computing portfolio piece. Do not wait
 for ML before explaining or applying with it.

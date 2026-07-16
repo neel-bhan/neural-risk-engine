@@ -8,9 +8,10 @@ against analytical references, and uses a guarded neural surrogate for eligible 
 The neural model is an accelerator: invalid, unsafe, or out-of-domain results fall back to Monte
 Carlo.
 
-> Status: M4 is complete. The single-thread scalar engine returns price and pathwise Delta for
-> European, geometric-Asian, and arithmetic-Asian calls and puts through a validated backend-neutral
-> interface. Threading, ML, ONNX, and general performance claims are not implemented yet.
+> Status: M5 is complete. The dependency-free C++ engine has an explicit scalar reference mode and
+> deterministic multithreaded execution for plain, antithetic, and geometric-control-variate price
+> and pathwise-Delta estimators. Measurements are specific to the machine and protocol recorded in
+> [`docs/M5_PERFORMANCE.md`](docs/M5_PERFORMANCE.md); ML and ONNX are not implemented yet.
 
 ## Why this project is ordered this way
 
@@ -42,6 +43,7 @@ make run
 make convergence
 make variance
 make delta-validation
+make CXXFLAGS='-std=c++20 -O3 -DNDEBUG -Wall -Wextra -Wpedantic -Wconversion -Wshadow -Werror' performance
 ```
 
 `make convergence` runs the external M2 many-seed validation experiment; it is intentionally not
@@ -53,6 +55,10 @@ report is in [`docs/M3_VARIANCE_REDUCTION.md`](docs/M3_VARIANCE_REDUCTION.md).
 
 `make delta-validation` runs the external M4 many-seed pathwise/CRN Delta experiment. Its measured
 report is in [`docs/M4_DELTA_VALIDATION.md`](docs/M4_DELTA_VALIDATION.md).
+
+`make performance` runs the release M5 JSONL benchmark. It is intentionally separate from unit
+tests; the protocol and a versioned result summary are in
+[`docs/M5_PERFORMANCE.md`](docs/M5_PERFORMANCE.md).
 
 The equivalent CMake workflow is available once CMake 3.24+ is installed:
 

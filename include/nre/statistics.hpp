@@ -30,6 +30,9 @@ class StreamingStatistics {
  public:
   void add(double sample) noexcept;
 
+  // Combines an independently accumulated block using Chan's parallel variance formula.
+  void merge(const StreamingStatistics& other) noexcept;
+
   [[nodiscard]] std::size_t count() const noexcept;
 
   // Sample variance, standard error, and a confidence interval require at least two samples.
@@ -46,6 +49,9 @@ class StreamingStatistics {
 class StreamingBivariateStatistics {
  public:
   void add(double first_sample, double second_sample) noexcept;
+
+  // Combines an independently accumulated block in a deterministic caller-selected order.
+  void merge(const StreamingBivariateStatistics& other) noexcept;
 
   [[nodiscard]] std::size_t count() const noexcept;
 

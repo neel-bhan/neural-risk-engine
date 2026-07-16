@@ -12,6 +12,8 @@ namespace nre {
 struct MonteCarloConfig {
   std::uint64_t seed;
   std::size_t path_count;
+  // One retains the scalar reference draw order. Zero is invalid.
+  std::size_t thread_count{1};
 };
 
 struct EstimateDiagnostics {
@@ -29,6 +31,8 @@ struct MonteCarloResult {
   std::size_t effective_paths;
   std::size_t raw_paths;
   std::uint64_t seed;
+  std::size_t requested_threads;
+  std::size_t active_threads;
 };
 
 struct ControlVariateConfig {
@@ -47,6 +51,7 @@ struct ControlVariateResult {
   bool delta_control_applied;
   std::size_t pilot_paths;
   std::uint64_t pilot_seed;
+  std::size_t pilot_active_threads;
 };
 
 struct PathwiseSample {
@@ -66,6 +71,8 @@ struct BumpAndRevalueResult {
   std::size_t raw_paths;
   std::uint64_t seed;
   double spot_bump;
+  std::size_t requested_threads;
+  std::size_t active_threads;
 };
 
 struct ControlVariateBumpAndRevalueResult {
@@ -75,6 +82,7 @@ struct ControlVariateBumpAndRevalueResult {
   bool control_applied;
   std::size_t pilot_paths;
   std::uint64_t pilot_seed;
+  std::size_t pilot_active_threads;
 };
 
 // Inputs must be finite, with positive spot and non-negative time and volatility.
@@ -110,7 +118,9 @@ struct ControlVariateBumpAndRevalueResult {
 [[nodiscard]] double centered_spot_bump(double spot, const SpotBumpRule& rule);
 
 // Contracts and markets must have passed validate before pricing. Each function rejects a contract
-// of the wrong style, and all reject configurations with fewer than two paths.
+// of the wrong style, and all reject configurations with fewer than two paths or zero threads.
+// Requested workers are capped at the effective sample count. Fixed-seed reproducibility includes
+// thread_count; changing it intentionally selects a different deterministic set of worker streams.
 [[nodiscard]] MonteCarloResult price_european_monte_carlo(const OptionContract& contract,
                                                           const MarketState& market,
                                                           const MonteCarloConfig& config);

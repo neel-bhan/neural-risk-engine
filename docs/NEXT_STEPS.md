@@ -1,40 +1,29 @@
-# M5 work queue — Multithreading and performance engineering
+# M6 work queue — Reproducible dataset generation
 
-M4's implementation, strict builds, and many-seed numerical exit gate are complete at implementation
-commit `5c2adcb007d26a2e3935ca79f2072e5c4b653588`. The active milestone is **M5: multithreading and
-performance engineering**.
+M5 multithreading, profiling, strict builds, and the machine-specific performance exit gate are
+complete. The source field in `docs/M5_PERFORMANCE.md` must be replaced with the final implementation
+commit after this change is committed. The active milestone is **M6: reproducible dataset generation**.
 
-## Task 1 — Freeze a scalar benchmark protocol
+## Task 1 — Freeze the dataset schema and parameter domain
 
-- Define raw path evolution, effective sample, throughput, latency, and target-confidence-interval
-  timing consistently for plain, antithetic, and control-variate estimators.
-- Add a release-only benchmark harness with warm-up, repeated trials, steady-clock timing, and
-  machine-readable output.
-- Record compiler, flags, hardware, seed policy, path counts, observation counts, and timing method.
+- Version the feature, label, units, option-style, monitoring, engine, and estimator fields.
+- Declare parameter ranges before sampling and include boundary and analytical subsets.
+- Keep train/validation/test splits disjoint by parameter point.
 
-## Task 2 — Profile before optimizing
+## Task 2 — Add deterministic C++ generation
 
-- Profile representative European and arithmetic-Asian scalar workloads.
-- Record the commands and dominant costs without claiming that profiler percentages are universal.
-- Use the profile to select memory reuse, loop, RNG, or other scalar changes; preserve the exact
-  numerical problem and validate before/after results.
+- Generate price and pathwise-Delta labels through the trusted backend-neutral interface.
+- Record master seeds, thread policy, estimator, path counts, CI diagnostics, engine commit, and
+  build configuration in a manifest.
+- Write generated artifacts only under ignored `data/generated/` paths.
 
-## Task 3 — Add deterministic multithreading
+## Task 3 — Validate label quality and regeneration
 
-- Define master-seed-to-worker stream construction and document reproducibility scope.
-- Partition effective samples without sharing RNG or path buffers between workers.
-- Use per-thread statistics and a deterministic reduction order; avoid false sharing.
-- Cover non-divisible path counts and thread counts larger than useful work.
-
-## Task 4 — Validate and measure scaling
-
-- Check price and Delta invariance across configured thread counts within documented floating-point
-  tolerance.
-- Measure million raw path evolutions per second, speedup over the one-thread scalar baseline,
-  portfolio-style latency, and time to a stated target confidence interval.
-- Report scaling limits and profile evidence. Add SIMD only if the measured bottleneck supports it.
+- Cross-check European and geometric-Asian rows against analytical prices and Delta.
+- Reject or flag rows whose reference confidence interval misses the declared label tolerance.
+- Provide one small, fast regeneration command and a larger explicitly optional generation command.
 
 ## Scope boundary
 
-M5 does not add Python, label generation, PyTorch, ONNX Runtime, neural guardrails, or resume numbers
-that have not been measured. The dependency-free scalar path remains the correctness reference.
+M6 does not train a surrogate, add PyTorch or ONNX Runtime, claim dataset-scale numbers before a
+measured run, or weaken the dependency-free C++ pricing path.

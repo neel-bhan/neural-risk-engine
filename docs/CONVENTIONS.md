@@ -82,8 +82,15 @@ All analytical formulas, simulations, datasets, and tests must use this same mon
 - Performance results must state whether a “path” means a raw evolution, one plain payoff sample, or
   an antithetic pair.
 - Antithetic and control-variate comparisons must reuse the same draws.
-- Threaded runs derive non-overlapping deterministic streams from a master seed; the precise stream
-  construction will be chosen and documented in its milestone.
+- A scalar run (`thread_count = 1`) retains the original master-seed draw order. A multiworker run
+  derives one distinct seed per logical worker by applying the SplitMix64 finalizer to the master
+  seed and worker index, then gives each worker a private `std::mt19937_64`/Box-Muller generator.
+  SplitMix64 is a permutation, so configured workers receive distinct seed values and never share
+  generator state or owned draws. This is deterministic stream separation, not a proof that two
+  finite pseudorandom sequences can never contain the same value.
+- Thread-count reproducibility applies to a fixed master seed, requested thread count, worker
+  partition, toolchain, and platform. Changing thread count intentionally changes worker streams
+  and therefore the finite Monte Carlo estimate.
 
 ## Confidence intervals
 
