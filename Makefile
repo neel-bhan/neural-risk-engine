@@ -3,7 +3,7 @@ CPPFLAGS := -Iinclude
 CXXFLAGS ?= -std=c++20 -O2 -Wall -Wextra -Wpedantic -Wconversion -Wshadow
 BUILD_DIR := build/make
 
-.PHONY: all run test check convergence clean
+.PHONY: all run test check convergence variance clean
 
 all: $(BUILD_DIR)/nre_cli
 
@@ -23,7 +23,8 @@ $(BUILD_DIR)/random.o: src/random.cpp include/nre/random.hpp | $(BUILD_DIR)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
 $(BUILD_DIR)/monte_carlo.o: src/monte_carlo.cpp include/nre/monte_carlo.hpp \
-		include/nre/domain.hpp include/nre/random.hpp include/nre/statistics.hpp | $(BUILD_DIR)
+		include/nre/analytics.hpp include/nre/domain.hpp include/nre/random.hpp \
+		include/nre/statistics.hpp | $(BUILD_DIR)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
 $(BUILD_DIR)/nre_cli: src/main.cpp $(BUILD_DIR)/domain.o $(BUILD_DIR)/analytics.o \
@@ -52,6 +53,11 @@ $(BUILD_DIR)/m2_convergence: benchmarks/m2_convergence.cpp $(BUILD_DIR)/domain.o
 		$(BUILD_DIR)/monte_carlo.o | $(BUILD_DIR)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@
 
+$(BUILD_DIR)/m3_variance_reduction: benchmarks/m3_variance_reduction.cpp $(BUILD_DIR)/domain.o \
+		$(BUILD_DIR)/analytics.o $(BUILD_DIR)/statistics.o $(BUILD_DIR)/random.o \
+		$(BUILD_DIR)/monte_carlo.o | $(BUILD_DIR)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@
+
 run: $(BUILD_DIR)/nre_cli
 	./$(BUILD_DIR)/nre_cli
 
@@ -65,6 +71,9 @@ test: $(BUILD_DIR)/nre_tests $(BUILD_DIR)/analytics_tests $(BUILD_DIR)/statistic
 
 convergence: $(BUILD_DIR)/m2_convergence
 	./$(BUILD_DIR)/m2_convergence
+
+variance: $(BUILD_DIR)/m3_variance_reduction
+	./$(BUILD_DIR)/m3_variance_reduction
 
 check: test
 

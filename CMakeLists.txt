@@ -40,6 +40,9 @@ target_link_libraries(nre_cli PRIVATE nre::core)
 add_executable(nre_m2_convergence benchmarks/m2_convergence.cpp)
 target_link_libraries(nre_m2_convergence PRIVATE nre::core)
 
+add_executable(nre_m3_variance_reduction benchmarks/m3_variance_reduction.cpp)
+target_link_libraries(nre_m3_variance_reduction PRIVATE nre::core)
+
 include(CTest)
 if(BUILD_TESTING)
   add_executable(nre_tests tests/domain_tests.cpp)
