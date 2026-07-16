@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Show toolchain versions
+        run: |
+          c++ --version
+          cmake --version
+
+      - name: Build and test with Make
+        run: |
+          make check CXXFLAGS="-std=c++20 -O2 -Wall -Wextra -Wpedantic -Wconversion -Wshadow -Werror"
+
+      - name: Configure CMake
+        run: |
+          cmake -S . -B build/cmake \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DNRE_WARNINGS_AS_ERRORS=ON
+
+      - name: Build with CMake
+        run: cmake --build build/cmake --parallel 2
+
+      - name: Test with CTest
+        run: ctest --test-dir build/cmake --output-on-failure
