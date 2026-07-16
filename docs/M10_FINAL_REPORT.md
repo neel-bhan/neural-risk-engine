@@ -5,7 +5,7 @@ This report closes the staged project with a measured many-contract risk workloa
 validation references, multithreaded Monte Carlo is trusted for all supported products, and ONNX
 Runtime accelerates only candidates accepted by C++ engineering guardrails.
 
-Source implementation commit: `PENDING`.
+Source implementation commit: `9e803a0a687a94afea5f0de08b23d85971e13277`.
 
 ## Frozen synthetic workload
 

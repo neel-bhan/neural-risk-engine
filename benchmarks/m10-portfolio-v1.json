@@ -1,6 +1,6 @@
 {
   "result_version": "nre.portfolio_benchmark.v1",
-  "source_implementation_commit": "PENDING",
+  "source_implementation_commit": "9e803a0a687a94afea5f0de08b23d85971e13277",
   "protocol_fnv1a64": "fb71f80210738f0c",
   "artifact_version": "nre.onnx.scalar_price.v1",
   "model_fnv1a64": "1f60d27245e9e262",
