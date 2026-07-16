@@ -72,7 +72,7 @@ update by the committing agent.
 At this point the project is already a credible C++/numerical-computing portfolio piece. Do not wait
 for ML before explaining or applying with it.
 
-## M6 — Reproducible dataset generation
+## M6 — Reproducible dataset generation (complete)
 
 **Learn:** parameter-space design, data leakage, label noise, and schema/version management.
 
@@ -82,6 +82,10 @@ evaluation than for bulk training if cost requires it, and record both.
 
 **Exit gate:** a fresh command regenerates a small dataset; manifests capture engine commit and
 configuration; analytical subsets pass cross-checks.
+
+The schema, deterministic generator, quality policy, small-run measurements, and regeneration
+evidence are in [`M6_DATASET_GENERATION.md`](M6_DATASET_GENERATION.md). The source commit field is
+left `PENDING` until the implementation commit exists.
 
 ## M7 — Simple surrogate baseline
 

@@ -121,3 +121,23 @@ Centered spot bump-and-revalue is an independent validation estimator. Up/down v
 common random numbers and the default scale-aware bump `max(1e-4 * spot, 1e-6)`. A bump is invalid
 when it is non-finite, non-positive, or at least the current spot. Its standard error comes from
 paired finite-difference samples, not from treating up/down price estimates as independent.
+
+## M6 dataset domain and labels
+
+Schema `nre.dataset.v1` fixes a deployment-candidate domain before model training: spot and strike
+60–140 currency units, maturity 0.25–2 years, volatility 0.05–0.60, risk-free rate -0.02–0.10,
+dividend yield -0.01–0.08, and 2–52 observations for Asian options. These are engineering dataset
+bounds, not a statement that future models are accurate throughout the domain. European contracts
+retain one maturity observation.
+
+The deterministic design includes each endpoint and radical-inverse interior points for European,
+geometric-Asian, and arithmetic-Asian calls and puts. A unique parameter point owns exactly one of
+train, validation, or test using a fixed 70/15/15 index mapping. The label generator does not create
+duplicate stochastic observations of one point.
+
+All labels use the C++ backend-neutral pricing interface and include price and pathwise Delta,
+their separate standard errors and 95% intervals, effective/raw paths, seeds, thread counts, and
+control-pilot diagnostics where applicable. Validation/test use greater path and pilot budgets and
+tighter declared SE limits than training. Rejected rows remain auditable but are not eligible for
+training. Analytical price/Delta values for European and geometric Asians are validation fields,
+not replacements for the Monte Carlo label.

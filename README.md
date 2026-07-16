@@ -8,10 +8,12 @@ against analytical references, and uses a guarded neural surrogate for eligible 
 The neural model is an accelerator: invalid, unsafe, or out-of-domain results fall back to Monte
 Carlo.
 
-> Status: M5 is complete. The dependency-free C++ engine has an explicit scalar reference mode and
+> Status: M6 is complete. The dependency-free C++ engine has an explicit scalar reference mode and
 > deterministic multithreaded execution for plain, antithetic, and geometric-control-variate price
-> and pathwise-Delta estimators. Measurements are specific to the machine and protocol recorded in
-> [`docs/M5_PERFORMANCE.md`](docs/M5_PERFORMANCE.md); ML and ONNX are not implemented yet.
+> and pathwise-Delta estimators, plus versioned deterministic dataset generation through the same
+> pricing interface. Dataset evidence is in
+> [`docs/M6_DATASET_GENERATION.md`](docs/M6_DATASET_GENERATION.md); surrogate models and ONNX are not
+> implemented yet.
 
 ## Why this project is ordered this way
 
@@ -43,6 +45,8 @@ make run
 make convergence
 make variance
 make delta-validation
+make dataset-small
+make dataset-verify
 make CXXFLAGS='-std=c++20 -O3 -DNDEBUG -Wall -Wextra -Wpedantic -Wconversion -Wshadow -Werror' performance
 ```
 
@@ -59,6 +63,11 @@ report is in [`docs/M4_DELTA_VALIDATION.md`](docs/M4_DELTA_VALIDATION.md).
 `make performance` runs the release M5 JSONL benchmark. It is intentionally separate from unit
 tests; the protocol and a versioned result summary are in
 [`docs/M5_PERFORMANCE.md`](docs/M5_PERFORMANCE.md).
+
+`make dataset-small` generates the 60-row M6 evidence dataset under ignored `data/generated/` and
+validates it while writing. `make dataset-verify` independently checks its row counts and checksum;
+`make dataset-reproduce` requires two fresh runs to be byte-identical. The schema, configurable
+larger command, and measured small run are documented in [`data/README.md`](data/README.md).
 
 The equivalent CMake workflow is available once CMake 3.24+ is installed:
 
@@ -77,6 +86,7 @@ tests/                Deterministic tests
 docs/                 Architecture, conventions, roadmap, and next tasks
 python/               Reserved for the later ML toolchain
 benchmarks/           Reserved for reproducible benchmark programs
+data/                 Versioned dataset schema/config; generated labels are ignored
 ```
 
 Start with [the quant primer](docs/QUANT_PRIMER.md), then read

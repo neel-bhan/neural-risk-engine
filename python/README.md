@@ -1,8 +1,8 @@
-# Python workspace (introduced in M6)
+# Python workspace (introduced in M7)
 
-Python dataset generation, baseline models, PyTorch training, evaluation, and ONNX export will live
-here after the trusted C++ engine and benchmark harness pass milestones M1–M5.
+Dataset generation remains in the dependency-free trusted C++ engine. Python baseline models,
+PyTorch training, evaluation, and ONNX export will live here beginning with M7.
 
-No Python environment or dependency lockfile is defined yet. Add them when M6 begins so the chosen
-versions reflect the deployment and hardware constraints at that time.
-
+No Python environment or dependency lockfile is defined yet. M7 must introduce an isolated,
+minimally pinned environment before adding its simple baseline dependency; do not install the M8/M9
+stack prematurely.

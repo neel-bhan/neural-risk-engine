@@ -8,6 +8,7 @@ option(NRE_WARNINGS_AS_ERRORS "Treat compiler warnings as errors" OFF)
 
 add_library(nre_core
     src/analytics.cpp
+    src/dataset.cpp
     src/domain.cpp
     src/monte_carlo.cpp
     src/pricing.cpp
@@ -53,6 +54,9 @@ target_link_libraries(nre_m4_delta_validation PRIVATE nre::core)
 add_executable(nre_m5_performance benchmarks/m5_performance.cpp)
 target_link_libraries(nre_m5_performance PRIVATE nre::core)
 
+add_executable(nre_dataset src/dataset_main.cpp)
+target_link_libraries(nre_dataset PRIVATE nre::core)
+
 include(CTest)
 if(BUILD_TESTING)
   add_executable(nre_tests tests/domain_tests.cpp)
@@ -82,4 +86,9 @@ if(BUILD_TESTING)
   add_executable(nre_threading_tests tests/threading_tests.cpp)
   target_link_libraries(nre_threading_tests PRIVATE nre::core)
   add_test(NAME threading_tests COMMAND nre_threading_tests)
+
+  add_executable(nre_dataset_tests tests/dataset_tests.cpp)
+  target_link_libraries(nre_dataset_tests PRIVATE nre::core)
+  target_compile_definitions(nre_dataset_tests PRIVATE NRE_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
+  add_test(NAME dataset_tests COMMAND nre_dataset_tests)
 endif()

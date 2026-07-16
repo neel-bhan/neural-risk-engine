@@ -88,12 +88,26 @@ statistical scalar/threaded agreement, deterministic zero-volatility cases, and 
 invariants provide the correctness checks. Requested and active worker counts are returned through
 the backend-neutral pricing result.
 
+M6 adds a standard-library-only offline `dataset` module above the pricing router. Versioned config
+files declare the feature domain, sample budgets, thread policy, quality tolerances, master seed,
+and source-finalization field before generation. A deterministic endpoint-plus-radical-inverse
+design covers all six style/type combinations. The unique parameter point owns its 70/15/15 split;
+stochastic observations are never split independently.
+
+Every label is generated through the validated `nre::price` interface with the M5 execution
+controls. European and geometric-Asian labels use plain Monte Carlo and analytical results as
+cross-checks; arithmetic Asians use the independent-pilot geometric control variate. CSV rows carry
+price/Delta uncertainty and complete execution/control metadata. A deterministic manifest records
+the schema, domain, compiler/build/hardware summary, config and label checksums, seed rule, split
+counts, and quality results. Failed quality gates retain the row for audit but set
+`included_for_training=false`. Generated artifacts never become source dependencies.
+
 Dependencies should point downward from orchestration to small numerical components. In particular,
 `domain` and `analytics` must not depend on Monte Carlo or ML.
 
-## Planned Python modules
+## Planned Python modules (M7 and later)
 
-- Dataset generation orchestration and schema checks.
+- Dataset loading and schema/manifest checks.
 - Polynomial regression or gradient-boosting baseline.
 - PyTorch model, derivative-supervised loss, evaluation, and export.
 - Cross-language parity tests for preprocessing and ONNX output.
